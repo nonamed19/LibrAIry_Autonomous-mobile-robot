@@ -1,0 +1,11 @@
+{
+    "api": {
+      "base_url": "http://43.200.7.229:8080/api/book/robot",
+      "headers": {
+        "accept": "*/*",
+        "Content-Type": "application/json"
+      },
+      "robot_id": 1
+    }
+  }
+  

@@ -1,0 +1,3 @@
+[ 40%] Built target rf2o_laser_odometry
+[35m[1mScanning dependencies of target rf2o_laser_odometry_node[0m
+[ 60%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry_node.dir/src/CLaserOdometry2DNode.cpp.o[0m

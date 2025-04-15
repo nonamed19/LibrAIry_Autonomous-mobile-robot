@@ -1,0 +1,19 @@
+frequency: 10
+publish_tf: true  # Publishes map → odom
+world_frame: map
+odom_frame: odom_combined
+base_link_frame: base_link
+
+odom0: /odom_combined
+odom0_config: [false, false, false,  # IMU does NOT provide position
+              true, true, true,     # Use IMU roll, pitch, yaw
+              false, false, false,  # IMU does NOT provide velocity
+              true, true, true,     # Use IMU angular velocity
+              false, false, false]  # Ignore acceleration
+
+pose0: /amcl_pose  # AMCL localization corrections
+pose0_config: [true, true, false,  # Use AMCL x, y
+               false, false, true,  # Use AMCL yaw
+               false, false, false, # No velocity corrections
+               false, false, false,
+               false, false, false]

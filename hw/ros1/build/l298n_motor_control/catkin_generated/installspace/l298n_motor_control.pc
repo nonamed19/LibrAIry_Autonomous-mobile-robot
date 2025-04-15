@@ -1,0 +1,8 @@
+prefix=/home/a103/catkin_ws/install
+
+Name: l298n_motor_control
+Description: Description of l298n_motor_control
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

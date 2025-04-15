@@ -1,0 +1,23 @@
+<launch>
+    <node name="LaserScanMatcher" pkg="laser_scan_matcher" type="laser_scan_matcher_node" output="screen">
+        <!-- Input topics -->
+        <param name="scan_topic" value="/scan"/>
+        <!-- <param name="odom_topic" value="/odom"/> --> <!-- Input odometry -->
+        <param name="imu_topic" value="/imu/data"/> <!-- Input IMU -->
+        
+        <!-- Output odometry -->
+        <param name="publish_odom" value="true"/>
+        <param name="odom_frame" value="odom"/>
+        <param name="base_frame" value="base_link"/>
+
+        <!-- Optional parameters -->
+        <param name="max_iterations" value="10"/>
+        <param name="use_imu" value="true"/>
+        <param name="use_odom" value="false"/>
+
+	<!-- Publishing Rate -->
+        <param name="publish_tf" value="false" />
+        <param name="tf_cache_time" value="5.0" />
+        <param name="tf_publish_rate" value="30"/> <!-- Publish at 30 Hz -->
+    </node>
+</launch>

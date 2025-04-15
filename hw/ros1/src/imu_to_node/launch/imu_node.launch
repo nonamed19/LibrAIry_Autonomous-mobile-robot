@@ -1,0 +1,9 @@
+<launch>
+
+  <node pkg="imu_to_node" type="imu_node.py" name="imu_node">
+    <param name="use_sim_time" value="false" />
+  </node>
+  <node pkg="imu_to_node" type="imu_to_base_tf.py" name="imu_to_base_tf" output="screen">
+    <param name="use_sim_time" value="false" />
+  </node>
+</launch>

@@ -1,0 +1,8 @@
+prefix=/home/a103/catkin_ws/install
+
+Name: imu_to_node
+Description: Description of imu_to_node
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

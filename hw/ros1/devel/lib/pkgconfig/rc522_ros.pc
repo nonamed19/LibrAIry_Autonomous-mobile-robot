@@ -1,0 +1,8 @@
+prefix=/home/a103/catkin_ws/devel
+
+Name: rc522_ros
+Description: Description of rc522_ros
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

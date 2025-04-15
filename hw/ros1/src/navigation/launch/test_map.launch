@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="map_server" type="map_server" name="map_server" output="screen">
+    <param name="yaml_filename" value="/home/a103/catkin_ws/src/navigation/maps/blank_map.yaml" />
+  </node>
+</launch>

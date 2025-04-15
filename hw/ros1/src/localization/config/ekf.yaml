@@ -1,0 +1,119 @@
+
+# Global Configuration
+frequency: 100  # Adjust as needed
+sensor_timeout: 0.2
+two_d_mode: true
+transform_time_offset: 0.1
+
+predict_to_current_time: false
+use_control: false
+stampled_control: false
+
+# State Estimation Settings
+odom_frame: odom
+base_link_frame: base_link
+world_frame: odom
+#world_frame: map
+map_frame: map
+publish_tf: true
+
+publish_acceleration: false
+publish_velocity: false
+
+# Sensor Inputs
+# Imu
+imu0: /imu/data
+
+# imu0_config:   [false, false, false,  # x, y, z (position)
+#                false, false, true,   # roll, pitch, yaw (orientation)
+#                true, true, false,  # x, y, z (linear velocity)
+#                true, true, true,   # roll, pitch, yaw (angular velocity)
+#                true, true, true]  # linear acceleration
+imu0_config: [false, false, false,
+              false,  false,  true,
+              false, false, false,
+              true,  true,  true,
+              true,  true,  true] 
+
+# Pose (AMCL)
+#pose0: /amcl_pose
+#pose0_config: [true, true, false,
+#               false, false, true,
+#               false, false, false,
+#               false, false, false,
+#               false, false, false]
+
+# Odom
+#odom0: /wheel
+#odom0_config: [false, false, false,
+#               false, false, false,
+#               true, true, false,
+#               false, false, false,
+#               false, false, false]
+
+# Noise and Covariance Settings
+#imu0
+imu0_differential: true
+imu0_remove_gravitational_acceleration: true
+imu0_relative: false
+imu0_use_mag: false
+imu0_remove_bias: true
+
+imu0_queue_size: 10
+imu0_orientation_rejection_threshold: 0.1
+imu0_linear_acceleration_rejection_threshold: 0.01
+imu0_twist_rejection_threshold: 0.1
+
+
+#pose0 
+#pose0_differential: false
+#pose0_relative: false
+
+#pose0_queue_size: 10
+#pose0_rejection_threshold: 2.0
+
+# Output Settings
+print_diagnostics: false
+reset_on_time_jump: false
+
+# Process Noise (Tuning Required)
+# Higher values mean less trust in sensor data
+process_noise_covariance: [0.05, 0, 0, 0, 0, 0,
+                           0, 0.15, 0, 0, 0, 0,
+                           0, 0, 0.05, 0, 0, 0,
+                           0, 0, 0, 0.15, 0, 0,
+                           0, 0, 0, 0, 0.05, 0,
+                           0, 0, 0, 0, 0, 0.05]
+
+#process_noise_covariance: [0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#                           0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#                           0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#                           0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0,
+#                           0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0,
+#                           0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0,
+#                           0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0,
+#                           0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0,
+#                           0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0,
+#                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0,
+#                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0,
+#                           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1]
+
+initial_estimate_covariance: [0.01, 0, 0, 0, 0, 0,
+                              0, 0.01, 0, 0, 0, 0,
+                              0, 0, 0.01, 0, 0, 0,
+                              0, 0, 0, 0.01, 0, 0,
+                              0, 0, 0, 0, 0.01, 0,
+                              0, 0, 0, 0, 0, 0.01]
+
+#initial_estimate_covariance: [1e-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#                              0, 1e-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#                              0, 0, 1e-2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#                              0, 0, 0, 1e-2, 0, 0, 0, 0, 0, 0, 0, 0,
+#                              0, 0, 0, 0, 1e-2, 0, 0, 0, 0, 0, 0, 0,
+#                              0, 0, 0, 0, 0, 1e-2, 0, 0, 0, 0, 0, 0,
+#                              0, 0, 0, 0, 0, 0, 1e-2, 0, 0, 0, 0, 0,                             
+#                              0, 0, 0, 0, 0, 0, 0, 1e-2, 0, 0, 0, 0,
+#                              0, 0, 0, 0, 0, 0, 0, 0, 1e-2, 0, 0, 0,
+#                              0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-2, 0, 0,
+#                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-2, 0,
+#                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-2]
