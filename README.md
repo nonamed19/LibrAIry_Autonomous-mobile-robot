@@ -1,7 +1,7 @@
 # LibrAIry: 도서관 자율주행 로봇 시스템
 
 <p align="center">
-  <img src="./readimg/main_page.png" width="600" alt="main_page"/>
+  <img src="./readimg/1. hardware.png" width="600" alt="main_page"/>
 </p>
 
 SSAFY 관통 프로젝트 - 도서관 자율주행 로봇 시스템 구축<br>
@@ -76,9 +76,11 @@ $ docker-compose up --build
 
 ## 화면 구성
 
-| 메인 페이지                                      | 로봇 관리                                         | 회수 현황                                              |
-| ------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------ |
-| <img src="./readimg/main_page.png" width="300"/> | <img src="./readimg/robot_page.png" width="300"/> | <img src="./readimg/arrivezone_page.png" width="300"/> |
+|                                  기본 기능 페이지                                  |                               도서 대출 페이지                               |
+| :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
+| <img src="./readimg/2. basic_features.png" height="400px" title="baisc_features"/> | <img src="./readimg/3. book_borrow.png" height="400px" title="book_borrow"/> |
+|                                  도서 반납 페이지                                  |                               도서 반납 페이지                               |
+|  <img src="./readimg/3.5 book_return_0.png" height="400px" title="book_return"/>   | <img src="./readimg/4. book_return.png" height="400px" title="book_return"/> |
 
 ## 주요 기능
 
@@ -105,6 +107,18 @@ $ docker-compose up --build
 3. DB 기반 관리 시스템
 
 - 로봇에서 수집된 데이터를 DB에 저장하여 도서 분류 상태를 원격으로 모니터링 가능.
+
+## 아키텍쳐
+
+### 아키텍쳐 다이어그램
+
+<p align="center">
+  <img src="./readimg/architecture_diagram.png" width="600" alt="main_page"/>
+
+### ROS 네트워크 구성도
+
+<p align="center">
+  <img src="./readimg/ROS_Network_diagram.png" width="600" alt="main_page"/>
 
 ## 기타 추가 사항들
 
