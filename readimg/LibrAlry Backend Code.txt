@@ -1,0 +1,4767 @@
+```back/library/db-init/01-init.sql
+CREATE TABLE book
+(
+    book_id         varchar(255) PRIMARY KEY,
+    book_isbn       varchar(255) NOT NULL,
+    book_title      varchar(255) NOT NULL,
+    book_writer     varchar(255) NULL,
+    book_publisher  varchar(100) NULL,
+    book_status     tinyint NULL,
+    book_sign       varchar(100) NULL,
+    book_created_at datetime NULL,
+    arrive_zone_id  int          NOT NULL
+);
+
+CREATE TABLE `user`
+(
+    user_id         int PRIMARY KEY AUTO_INCREMENT,
+    user_login_id   varchar(100) NOT NULL,
+    user_password   varchar(100) NOT NULL,
+    user_name       varchar(10)  NOT NULL,
+    user_email      varchar(100) NOT NULL,
+    user_birth      date         NOT NULL,
+    user_created_at date         NOT NULL,
+    user_status     tinyint  NOT NULL,
+    user_code       varchar(255) NOT NULL
+);
+
+CREATE TABLE borrow_record
+(
+    borrow_record_id int PRIMARY KEY AUTO_INCREMENT,
+    borrow_at        datetime     NOT NULL,
+    return_at        datetime NULL,
+    book_id          varchar(255) NOT NULL,
+    user_id          int          NOT NULL
+);
+
+CREATE TABLE robot
+(
+    robot_id        int PRIMARY KEY AUTO_INCREMENT,
+    robot_name      varchar(100) NOT NULL
+);
+
+CREATE TABLE notice
+(
+    notice_id         int PRIMARY KEY AUTO_INCREMENT,
+    notice_created_at datetime     NOT NULL,
+    notice_status     boolean      NOT NULL,
+    notice_type       tinyint NOT NULL,
+    notice_content    varchar(1000) NOT NULL,
+    robot_id          int          NOT NULL
+);
+
+CREATE TABLE robot_log
+(
+    robot_log_id           int PRIMARY KEY AUTO_INCREMENT,
+    robot_log_type         tinyint       NOT NULL,
+    robot_log_content      varchar(1000) NOT NULL,
+    robot_log_created_at   datetime      NOT NULL,
+    robot_log_completed_at datetime NULL,
+    robot_id               int           NOT NULL
+);
+
+CREATE TABLE arrive_zone
+(
+    arrive_zone_id   int PRIMARY KEY AUTO_INCREMENT,
+    arrive_zone_name varchar(100) NOT NULL,
+    arrive_zone_book int          NOT NULL,
+    arrive_zone_time datetime NULL,
+    library_map_id           int          NOT NULL
+);
+
+CREATE TABLE library_map
+(
+    library_map_id        int PRIMARY KEY AUTO_INCREMENT,
+    library_map_name      varchar(255) NULL,
+    library_map_x         double NULL,
+    library_map_y         double NULL,
+    library_map_w         double NULL
+);
+
+CREATE TABLE salt
+(
+    user_id int PRIMARY KEY,
+    salt    varchar(200) NOT NULL
+);
+
+/*
+CREATE TABLE token (
+	Key	VARCHAR(255)	PRIMARY KEY,
+	Field	VARCHAR(255)	NULL,
+	Field2	VARCHAR(255)	NULL,
+	Field3	VARCHAR(255)	NULL,
+	Field4	VARCHAR(255)	NULL
+);
+*/
+
+ALTER TABLE book
+    ADD CONSTRAINT
+        FOREIGN KEY (arrive_zone_id) REFERENCES arrive_zone (arrive_zone_id);
+
+ALTER TABLE borrow_record
+    ADD CONSTRAINT
+        FOREIGN KEY (book_id) REFERENCES book (book_id);
+
+ALTER TABLE borrow_record
+    ADD CONSTRAINT
+        FOREIGN KEY (user_id) REFERENCES `user` (user_id);
+
+ALTER TABLE notice
+    ADD CONSTRAINT
+        FOREIGN KEY (robot_id) REFERENCES robot (robot_id);
+
+ALTER TABLE robot_log
+    ADD CONSTRAINT
+        FOREIGN KEY (robot_id) REFERENCES robot (robot_id);
+
+ALTER TABLE arrive_zone
+    ADD CONSTRAINT
+        FOREIGN KEY (library_map_id) REFERENCES library_map (library_map_id);
+
+ALTER TABLE salt
+    ADD CONSTRAINT
+        FOREIGN KEY (user_id) REFERENCES `user` (user_id);
+```
+```back/library/db-init/02-dummydata.sql
+-- user 테이블 더미 데이터
+INSERT INTO `user` (user_login_id, user_password, user_name, user_email, user_birth, user_created_at, user_status, user_code)
+VALUES
+('user001', 'pass123!', '홍길동', 'user001@example.com', '1990-01-01', '2024-02-03', 0, 'U001XYZ'),
+('user002', 'pass123!', '김철수', 'user002@example.com', '1992-03-15', '2024-02-03', 0, 'U002XYZ'),
+('user003', 'pass123!', '이영희', 'user003@example.com', '1988-07-22', '2024-02-03', 0, 'U003XYZ'),
+('user004', 'pass123!', '박민수', 'user004@example.com', '1995-12-10', '2024-02-03', 0, 'U004XYZ'),
+('user005', 'pass123!', '최지은', 'user005@example.com', '2000-06-05', '2024-02-03', 0, 'U005XYZ'),
+('user006', 'pass123!', '정우성', 'user006@example.com', '1985-09-09', '2024-02-03', 0, 'U006XYZ'),
+('user007', 'pass123!', '한지민', 'user007@example.com', '1998-11-18', '2024-02-03', 0, 'U007XYZ'),
+('user008', 'pass123!', '신혜선', 'user008@example.com', '1993-04-25', '2024-02-03', 0, 'U008XYZ'),
+('user009', 'pass123!', '조세호', 'user009@example.com', '1991-08-30', '2024-02-03', 0, 'U009XYZ'),
+('user010', 'pass123!', '강호동', 'user010@example.com', '1980-05-20', '2024-02-03', 0, 'U010XYZ');
+
+-- robot 테이블 더미 데이터
+INSERT INTO robot (robot_name)
+VALUES
+('RoboA1'),
+('RoboA2'),
+('RoboA3'),
+('RoboA4'),
+('RoboA5'),
+('RoboA6'),
+('RoboA7'),
+('RoboA8'),
+('RoboA9'),
+('RoboA10');
+
+-- map 테이블 더미 데이터
+INSERT INTO `library_map` (library_map_id, library_map_name, library_map_x, library_map_y, library_map_w)
+VALUES
+(1, 'MapPoint1', 4.5, 1.0, 90),
+(2, 'MapPoint2', 6, 1.0, 90),
+(3, 'MapPoint3', 0, 0, 0),
+(4, 'MapPoint4', 1.0, 1.0, 1.0),
+(5, 'MapPoint5', 1.0, 1.0, 1.0),
+(6, 'MapPoint6', 1.0, 1.0, 1.0),
+(7, 'MapPoint7', 1.0, 1.0, 1.0),
+(8, 'MapPoint8', 1.0, 1.0, 1.0),
+(9, 'MapPoint9', 1.0, 1.0, 1.0),
+(10, 'MapPoint10', 1.0, 1.0, 1.0);
+
+-- arrive_zone 테이블 더미 데이터
+INSERT INTO arrive_zone (arrive_zone_name, arrive_zone_book, arrive_zone_time, library_map_id)
+VALUES
+('문학', 3, '2024-02-03 10:30:00', 1),
+('기술과학', 5, '2024-02-03 11:00:00', 2),
+('철학', 2, '2024-02-03 12:15:00', 3),
+('종교', 4, '2024-02-03 13:45:00', 4),
+('사회과학', 1, '2024-02-03 14:00:00', 5),
+('자연과학', 6, '2024-02-03 15:20:00', 6),
+('예술', 3, '2024-02-03 16:10:00', 7),
+('언어', 5, '2024-02-03 17:30:00', 8),
+('총류', 2, '2024-02-03 18:45:00', 9),
+('역사', 4, '2024-02-03 19:00:00', 10),
+('Initial_Zone', 0, NOW(), 3);
+
+UPDATE arrive_zone SET arrive_zone_id = 0 WHERE arrive_zone_id = 1001;
+
+
+INSERT INTO book (book_id, book_isbn, book_title, book_writer, book_publisher, book_status, book_sign, book_created_at, arrive_zone_id)
+VALUES
+('2502031211', '9788932034812', '여수의 사랑', '한강', '문학과지성사', 1, '813.62-ㅎ225ㅇ3', '2025-02-03 03:22:27', 1),
+('2502031214', '9788936434120', '소년이 온다', '한강', '창비', 1, '813.7-ㅎ225ㅅ=6', '2025-02-03 03:22:34', 1),
+('2502031215', '9788954682152', '작별하지 않는다', '한강', '문학과지성사', 1, '813.7-ㅎ225ㅈ=2', '2025-02-03 03:22:38', 1),
+('2502031217', '9788954616515', '희랍어 시간', '한강', '문학동네', 1, '813.7-ㅎ225ㅎ', '2025-02-03 03:22:47', 1),
+('2502031218', '9788954651134', '흰', '한강', '문학동네', 1, '813.7-ㅎ225흐2=4', '2025-02-03 03:22:52', 1),
+('2502031219', '9788954648905', '검은사슴', '한강', '문학과지성사', 0, '813.62-ㅎ225ㄱ', '2025-02-03 08:06:27', 1),
+('2502031220', '9788932024639', '서랍에 저녁을 넣어 두었다', '한강', '문학과지성사', 1, '811.7-ㅎ225ㅅ', '2025-02-03 03:23:01', 1),
+('2502031221', '9788932020006', '바람이 분다, 가라', '한강', '문학과지성사', 1, '813.6-ㅎ225ㅂ=2', '2025-02-03 03:23:06', 1),
+('2502031222', '9791158884680', '종이 동물원', '켄 리우', '황금가지', 1, '843.6-ㄹ948ㅈ=2', '2025-02-03 03:23:12', 1),
+('590443774914', '9791193790656', '해리포터와 마법사의 돌', 'J.K. 롤링', '문학수첩', 1, '330.9-ㅋ232ㅌ', NOW(), 1),
+('628134672746', '9791193790670', '해리포터와 아즈카반의 죄수', 'J.K. 롤링', '문학수첩', 1, '813.7-ㄱ976ㅇ=2', NOW(), 1),
+('414072919797', '9788934939870', '어디에나 있고 무엇이든 하는 알고리즘 이야기', '문병로', '김영사', 1, '863.6-ㅂ486ㅈ=3', NOW(), 2);
+
+
+DELIMITER $$
+
+CREATE PROCEDURE InsertDummyBorrowRecords(IN record_count INT)
+BEGIN
+    DECLARE i INT DEFAULT 0;
+    DECLARE rand_book_id VARCHAR(255);
+    DECLARE rand_user_id INT;
+    DECLARE user_id INT;
+    DECLARE rand_borrow_at DATETIME;
+    DECLARE rand_return_at DATETIME;
+
+    SET user_id = 3;
+
+    WHILE i < record_count DO
+        -- 랜덤한 book_id 가져오기
+        SELECT book_id INTO rand_book_id
+        FROM book
+        ORDER BY RAND()
+        LIMIT 1;
+
+        SET rand_borrow_at = DATE_SUB(NOW(), INTERVAL FLOOR(RAND() * 30) DAY);
+
+        IF RAND() > 0.5 THEN
+            SET rand_return_at = DATE_ADD(rand_borrow_at, INTERVAL FLOOR(RAND() * 14) DAY);
+        ELSE
+            SET rand_return_at = NULL;
+        END IF;
+
+        INSERT INTO borrow_record (borrow_at, return_at, book_id, user_id)
+        VALUES (rand_borrow_at, rand_return_at, rand_book_id, rand_user_id);
+
+        SET i = i + 1;
+    END WHILE;
+END $$
+
+DELIMITER ;
+
+CALL InsertDummyBorrowRecords(1000);
+```
+```back/library/db-init/03-mostprocedure.sql
+CREATE TABLE book_rank (
+    rank_id INT PRIMARY KEY AUTO_INCREMENT,
+    borrow_count INT NOT NULL,
+    ranking_period TINYINT NOT NULL,
+    updated_at DATE NOT NULL,
+    book_id varchar(255) NOT NULL,
+    UNIQUE (book_id, ranking_period)
+);
+
+ALTER TABLE book_rank
+    ADD CONSTRAINT
+        FOREIGN KEY (book_id) REFERENCES `book` (book_id);
+
+DELIMITER $$
+
+CREATE PROCEDURE get_weekly_top_books()
+BEGIN
+  REPLACE INTO book_rank (book_id, borrow_count, ranking_period, updated_at)
+  SELECT b.book_id, COUNT(b.book_id) AS borrow_count, 0, NOW()
+  FROM book b
+  JOIN borrow_record br ON b.book_id = br.book_id
+  WHERE br.borrow_at BETWEEN
+  DATE_SUB(DATE(NOW()), INTERVAL WEEKDAY(NOW()) + 7 DAY) AND
+  DATE_SUB(DATE(NOW()), INTERVAL WEEKDAY(NOW()) + 1 DAY)
+  GROUP BY b.book_id
+  ORDER BY borrow_count DESC
+  LIMIT 10;
+END $$
+
+CREATE PROCEDURE get_monthly_top_books()
+BEGIN
+  REPLACE INTO book_rank (book_id, borrow_count, ranking_period, updated_at)
+  SELECT b.book_id, COUNT(b.book_id) AS borrow_count, 1, NOW()
+  FROM book b
+  JOIN borrow_record br ON b.book_id = br.book_id
+  WHERE br.borrow_at BETWEEN 
+  DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01')
+  AND LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH))
+  GROUP BY b.book_id
+  ORDER BY borrow_count DESC
+  LIMIT 10;
+END $$
+
+DELIMITER ;
+
+CALL get_weekly_top_books();
+CALL get_monthly_top_books();
+```
+```back/library/gradle/wrapper/gradle-wrapper.properties
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.11.1-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+```
+```back/library/docker-compose.yml
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    container_name: db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Seoul
+    restart: always
+    command: bash -c "chmod 044 /etc/my.cnf && docker-entrypoint.sh mysqld"
+    volumes:
+      - ./my.cnf:/etc/my.cnf
+      - ./db-init:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+
+  springboot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springboot-container
+    volumes:
+      - ./robotphoto:/robotphoto
+    environment:
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    container_name: redis-container
+    restart: always
+    ports:
+      - "6379:6379"
+
+  nginx:
+    image: nginx
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:r
+      - ./robotphoto:/robotphoto
+    depends_on:
+      - springboot
+
+  mqtt-broker:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:r
+```
+```back/library/mosquitto.conf
+listener 1883
+allow_anonymous true
+
+listener 9001
+protocol websockets
+allow_anonymous true
+```
+```back/library/nginx.conf
+
+server {
+    listen 80;
+    server_name localhost;
+
+    location /robotphoto/ {
+        root /;
+        autoindex on;
+    }
+
+    location /api/ {
+        proxy_pass http://springboot-container:8080;  # Spring Boot 컨테이너로 프록시 요청
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /ws {
+        proxy_pass http://springboot-container:8080;  # Spring Boot WebSocket 엔드포인트
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 600s;   # 연결이 끊어지지 않도록 설정
+    }
+
+    location /mqtt {
+        proxy_pass http://mosquitto:9001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/config/EmailConfig.java
+package com.example.library.config;
+
+import java.util.Properties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+@Configuration
+public class EmailConfig {
+
+    @Value("${MAIL_USERNAME}")
+    private String mailUser;
+
+    @Value("${MAIL_PASSWORD}")
+    private String mailPassword;
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        // 네이버 SMTP 설정
+        mailSender.setHost("smtp.naver.com"); // SMTP 서버명
+        mailSender.setPort(465); // SMTP 포트 (SSL 사용)
+        mailSender.setUsername(mailUser); // 네이버 계정
+        mailSender.setPassword(mailPassword); // 앱 비밀번호 사용
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.trust", "smtp.naver.com");
+
+        mailSender.setJavaMailProperties(props);
+        return mailSender;
+    }
+
+    @Bean
+    public TemplateEngine templateEngine() {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(emailTemplateResolver());
+        return templateEngine;
+    }
+
+    @Bean
+    public ClassLoaderTemplateResolver emailTemplateResolver() {
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("templates/"); // resources/templates/ 경로
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML");
+        templateResolver.setCharacterEncoding("UTF-8");
+        return templateResolver;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/config/MqttConfig.java
+package com.example.library.config;
+
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
+import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
+import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
+import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
+
+@Configuration
+public class MqttConfig {
+
+    private final String MQTT_BROKER_URL = "tcp://mosquitto:1883";  // MQTT 브로커 주소
+    private final String MQTT_CLIENT_ID = "spring-boot-server";  // 클라이언트 ID
+
+    @Bean
+    public MqttPahoClientFactory mqttClientFactory() {
+        DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setServerURIs(new String[]{MQTT_BROKER_URL});
+        options.setCleanSession(true);
+        factory.setConnectionOptions(options);
+        return factory;
+    }
+
+    // ✅ 1. MQTT 메시지를 발행(Publish)하는 Bean
+    @Bean
+    @ServiceActivator(inputChannel = "mqttOutboundChannel")
+    public MessageHandler mqttOutbound() {
+        MqttPahoMessageHandler messageHandler =
+            new MqttPahoMessageHandler(MQTT_CLIENT_ID, mqttClientFactory());
+        messageHandler.setAsync(true);
+        return messageHandler;
+    }
+
+    @Bean
+    public MessageChannel mqttOutboundChannel() {
+        return new DirectChannel();
+    }
+
+    // ✅ 2. MQTT 메시지를 구독(Subscribe)하는 Bean
+    @Bean
+    public MessageChannel mqttInboundChannel() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    public MqttPahoMessageDrivenChannelAdapter mqttInbound() {
+        MqttPahoMessageDrivenChannelAdapter adapter =
+            new MqttPahoMessageDrivenChannelAdapter(MQTT_CLIENT_ID + "_sub",
+                mqttClientFactory(), "topic/book/borrow", "topic/user/borrow"
+                , "topic/book/return/start", "topic/book/return/finish",
+                "topic/log/save"); // 여러 개의 주제 구독 가능
+        adapter.setCompletionTimeout(5000);
+        adapter.setConverter(new DefaultPahoMessageConverter());
+        adapter.setQos(1);
+        adapter.setOutputChannel(mqttInboundChannel());
+        return adapter;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/config/RedisConfig.java
+package com.example.library.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+@Configuration
+public class RedisConfig {
+
+    private String redisHost = "redis-container";
+
+    private int redisPort = 6379;
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(redisHost, redisPort);
+    }
+
+    @Bean
+    @Primary
+    public RedisTemplate<String, String> redisTemplate() {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+        return template;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/config/SwaggerConfig.java
+package com.example.library.config;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration // 스프링 설정 클래스임을 나타냅니다.
+public class SwaggerConfig {
+
+    @Bean // 스프링 빈으로 등록합니다.
+    public OpenAPI openAPI() {
+        return new OpenAPI().components(new Components()) // API 구성 요소를 설정합니다.
+            .info(apiInfo()); // API 정보를 설정합니다.
+    }
+
+    private Info apiInfo() {
+        return new Info().title("A103_LibrAIry API ") // API 제목을 설정합니다.
+            .description("<h3>A103_LibrAIry API 명세서입니다.</h3>") // API 설명을 설정합니다.
+            .version("1.0.0"); // API 버전을 설정합니다.
+    }
+}
+```
+```back/library/src/main/java/com/example/library/config/WebConfig.java
+package com.example.library.config;
+
+import com.example.library.domain.token.interceptor.AuthorizationInterceptor;
+import com.example.library.domain.token.interceptor.JweAuthenticationInterceptor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    private final JweAuthenticationInterceptor jweAuthenticationInterceptor;
+    private final AuthorizationInterceptor authorizationInterceptor;
+
+    public WebConfig(JweAuthenticationInterceptor jweAuthenticationInterceptor,
+        AuthorizationInterceptor authorizationInterceptor) {
+        this.jweAuthenticationInterceptor = jweAuthenticationInterceptor;
+        this.authorizationInterceptor = authorizationInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(jweAuthenticationInterceptor)
+            .addPathPatterns("/api/user/search")
+            .addPathPatterns("/api/user/leave")
+            .addPathPatterns("/api/code")
+            .addPathPatterns("/api/user/auth/logout");
+    }
+//
+//        registry.addInterceptor(authorizationInterceptor)
+//            .addPathPatterns("/api/robot/**")
+//            .addPathPatterns("/api/notice/**")
+//            .addPathPatterns("/api/book/user")
+//            .addPathPatterns("/api/arrivezone/**");
+//    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**") // 모든 API 경로에 대해 적용
+                    .allowedOriginPatterns("http://localhost:3000",
+                        "http://70.12.246.33:3000",
+                        "https://*.vercel.app",
+                        "https://librairy.p-e.kr") // 허용할 프론트엔드 도메인
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedHeaders("*")
+                    .exposedHeaders("Authorization")// 허용할 HTTP 메서드
+                    .allowCredentials(true); // 쿠키 포함 여부
+            }
+        };
+    }
+}
+```
+```back/library/src/main/java/com/example/library/config/WebSocketConfig.java
+package com.example.library.config;
+
+import com.example.library.domain.websocket.WebSocketHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+
+    @Autowired
+    private WebSocketHandler webSocketHandler;
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(webSocketHandler, "/ws")
+            .setAllowedOrigins("*");
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/arrivezone/controller/ArriveZoneController.java
+package com.example.library.domain.arrivezone.controller;
+
+import com.example.library.domain.arrivezone.dto.request.ArriveZoneResetRequestDto;
+import com.example.library.domain.arrivezone.dto.response.ArriveZoneResetResponseDto;
+import com.example.library.domain.arrivezone.dto.response.ArriveZoneResponseDto;
+import com.example.library.domain.arrivezone.service.ArriveZoneService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/arrivezone")
+@Tag(name = "arrivezone 도메인")
+public class ArriveZoneController {
+
+    ArriveZoneService arriveZoneService;
+
+    public ArriveZoneController(ArriveZoneService arriveZoneService) {
+        this.arriveZoneService = arriveZoneService;
+    }
+
+    @Operation(summary = "회수 구역 상태 조회", description = "관리자가 회수 현황 배너를 클릭하면 요청되는 API 입니다.")
+    @GetMapping("")
+    public ResponseEntity<ArriveZoneResponseDto> arriveZoneInfo() {
+        return ResponseEntity.status(HttpStatus.OK).body(arriveZoneService.getArriveZoneList());
+    }
+
+    @Operation(summary = "회수 구역 상태 리셋", description = "관리자가 회수 구역에서 책을 정리한 이후에 누르는 버튼입니다.")
+    @PostMapping("")
+    public ResponseEntity<ArriveZoneResetResponseDto> resetArriveZone(
+        @RequestBody ArriveZoneResetRequestDto arriveZoneResetRequestDto) {
+
+        arriveZoneService.resetArriveZone(arriveZoneResetRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new ArriveZoneResetResponseDto(true, "리셋 완료!"));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/arrivezone/entity/ArriveZone.java
+package com.example.library.domain.arrivezone.entity;
+
+import com.example.library.domain.book.entity.Book;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+public class ArriveZone {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "arrive_zone_id")
+    private int arriveZoneId;
+    private String arriveZoneName;
+    private int arriveZoneBook;
+    private LocalDateTime arriveZoneTime;
+
+    @OneToOne
+    @JoinColumn(name = "library_map_id")
+    private LibraryMap libraryMap;
+
+    @OneToMany(mappedBy = "arriveZone")
+    private List<Book> bookList = new ArrayList<>();
+
+    public ArriveZone() {
+    }
+
+    public ArriveZone(String arriveZoneName, int arriveZoneBook, LocalDateTime arriveZoneTime,
+        LibraryMap libraryMap) {
+        this.arriveZoneName = arriveZoneName;
+        this.arriveZoneBook = arriveZoneBook;
+        this.arriveZoneTime = arriveZoneTime;
+        this.libraryMap = libraryMap;
+    }
+
+    public int getArriveZoneId() {
+        return arriveZoneId;
+    }
+
+    public String getArriveZoneName() {
+        return arriveZoneName;
+    }
+
+    public void setArriveZoneName(String arriveZoneName) {
+        this.arriveZoneName = arriveZoneName;
+    }
+
+    public int getArriveZoneBook() {
+        return arriveZoneBook;
+    }
+
+    public void setArriveZoneBook(int arriveZoneBook) {
+        this.arriveZoneBook = arriveZoneBook;
+    }
+
+    public LocalDateTime getArriveZoneTime() {
+        return arriveZoneTime;
+    }
+
+    public void setArriveZoneTime(LocalDateTime arriveZoneTime) {
+        this.arriveZoneTime = arriveZoneTime;
+    }
+
+    public LibraryMap getLibraryMap() {
+        return libraryMap;
+    }
+
+    public void setLibraryMap(LibraryMap libraryMap) {
+        this.libraryMap = libraryMap;
+    }
+
+    public List<Book> getBookList() {
+        return bookList;
+    }
+
+    public void addBook(Book book) {
+        if (bookList.contains(book)) {
+            return;
+        }
+
+        bookList.add(book);
+    }
+
+    public void deleteBook(Book book) {
+        bookList.remove(book);
+    }
+
+    public void addBookCount() {
+        arriveZoneBook += 1;
+    }
+
+    public void resetBookCount() {
+        arriveZoneBook = 0;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/arrivezone/entity/LibraryMap.java
+package com.example.library.domain.arrivezone.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class LibraryMap {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "library_map_id")
+    private int libraryMapId;
+    private String libraryMapName;
+    @Column(name = "library_map_x")
+    private double libraryMapX;
+    @Column(name = "library_map_y")
+    private double libraryMapY;
+    @Column(name = "library_map_w")
+    private double libraryMapW;
+
+    public LibraryMap() {
+    }
+
+    public LibraryMap(String libraryMapName, double libraryMapX, double libraryMapY,
+        double libraryMapW) {
+        this.libraryMapName = libraryMapName;
+        this.libraryMapX = libraryMapX;
+        this.libraryMapY = libraryMapY;
+        this.libraryMapW = libraryMapW;
+    }
+
+    public int getLibraryMapId() {
+        return libraryMapId;
+    }
+
+    public String getLibraryMapName() {
+        return libraryMapName;
+    }
+
+    public double getLibraryMapX() {
+        return libraryMapX;
+    }
+
+    public double getLibraryMapY() {
+        return libraryMapY;
+    }
+
+    public double getLibraryMapW() {
+        return libraryMapW;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/arrivezone/service/ArriveZoneService.java
+package com.example.library.domain.arrivezone.service;
+
+import com.example.library.domain.arrivezone.dto.request.ArriveZoneResetRequestDto;
+import com.example.library.domain.arrivezone.dto.response.ArriveZoneResponseDto;
+import com.example.library.domain.arrivezone.dto.response.ArriveZoneResponseDto.ArriveZoneDto;
+import com.example.library.domain.arrivezone.entity.ArriveZone;
+import com.example.library.domain.arrivezone.repository.ArriveZoneRepository;
+import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class ArriveZoneService {
+
+    private ArriveZoneRepository arriveZoneRepository;
+
+    public ArriveZoneService(ArriveZoneRepository arriveZoneRepository) {
+        this.arriveZoneRepository = arriveZoneRepository;
+    }
+
+    public ArriveZoneResponseDto getArriveZoneList() {
+        return new ArriveZoneResponseDto(arriveZoneRepository.findAll().stream()
+            .map(this::changeToDto)
+            .toList());
+    }
+
+    private ArriveZoneDto changeToDto(ArriveZone arriveZone) {
+        return new ArriveZoneDto(
+            arriveZone.getArriveZoneId(),
+            arriveZone.getArriveZoneName(),
+            arriveZone.getArriveZoneBook(),
+            arriveZone.getArriveZoneTime()
+        );
+    }
+
+    public void resetArriveZone(ArriveZoneResetRequestDto arriveZoneResetRequestDto) {
+        ArriveZone targetArriveZone = arriveZoneRepository
+            .findById(arriveZoneResetRequestDto.getArriveZoneId())
+            .orElseThrow(() -> new NoSuchElementException("해당 회수 구역의 데이터가 없습니다."));
+
+        targetArriveZone.resetBookCount();
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/controller/BookRobotController.java
+package com.example.library.domain.book.controller;
+
+import com.example.library.domain.book.dto.robot.request.BookBorrowRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookReturnEndRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookReturnStartRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookRobotRequestDto;
+import com.example.library.domain.book.dto.robot.response.BookBorrowResponseDto;
+import com.example.library.domain.book.dto.robot.response.BookReturnEndResponseDto;
+import com.example.library.domain.book.dto.robot.response.BookReturnStartResponseDto;
+import com.example.library.domain.book.dto.robot.response.BookRobotResponseDto;
+import com.example.library.domain.book.service.BookConnectService;
+import com.example.library.domain.book.service.BookRobotService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("api/book/robot")
+@Tag(name = "book/robot 도메인")
+public class BookRobotController {
+
+    BookRobotService bookRobotService;
+    BookConnectService bookConnectService;
+
+    public BookRobotController(BookRobotService bookRobotService,
+        BookConnectService bookConnectService) {
+        this.bookRobotService = bookRobotService;
+        this.bookConnectService = bookConnectService;
+    }
+
+    @Operation(summary = "도서 대출", description = "로봇에서 책을 대출할 때의 API 입니다.")
+    @PostMapping("/borrow")
+    public ResponseEntity<BookBorrowResponseDto> borrowBook(
+        @RequestBody BookBorrowRequestDto bookBorrowRequestDto) {
+
+        bookRobotService.borrowBook(bookBorrowRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new BookBorrowResponseDto(true, "대출 성공!"));
+    }
+
+    @Operation(summary = "도서 반납/반환 시작", description = "로봇에서 책을 반납 또는 반환 시작시의 API 입니다")
+    @PostMapping("/start")
+    public ResponseEntity<BookReturnStartResponseDto> returnBookStart(
+        @RequestBody BookReturnStartRequestDto bookReturnStartRequestDto) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(bookRobotService.returnBookStart(bookReturnStartRequestDto));
+    }
+
+    @Operation(summary = "도서 반납/반환 완료", description = "로봇에서 책을 반납 또는 반환을 완료했을 때의 API 입니다")
+    @PostMapping("/end")
+    public ResponseEntity<BookReturnEndResponseDto> returnBookEnd(
+        @RequestBody BookReturnEndRequestDto bookReturnRequestDto) {
+
+        bookRobotService.returnBookEnd(bookReturnRequestDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new BookReturnEndResponseDto(true, "처리 완료!"));
+    }
+
+    @Operation(summary = "대출하려는 도서 정보 저장", description = "로봇에서 책을 인식하고 정보를 백엔드에 보내는 API 입니다.")
+    @PostMapping("/save")
+    public ResponseEntity<BookRobotResponseDto> bookInfoRobot(
+        @RequestBody BookRobotRequestDto bookRobotRequestDto) {
+
+        bookConnectService.saveBookInfo(bookRobotRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new BookRobotResponseDto(true, "저장 성공!")
+        );
+    }
+
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/controller/BookUserController.java
+package com.example.library.domain.book.controller;
+
+import com.example.library.domain.book.dto.user.request.BookDeleteRequestDto;
+import com.example.library.domain.book.dto.user.request.BookFrontRequestDto;
+import com.example.library.domain.book.dto.user.request.BookUpdateRequestDto;
+import com.example.library.domain.book.dto.user.response.BookDeleteResponseDto;
+import com.example.library.domain.book.dto.user.response.BookDetailResponseDto;
+import com.example.library.domain.book.dto.user.response.BookFrontResponseDto;
+import com.example.library.domain.book.dto.user.response.BookMostListResponseDto;
+import com.example.library.domain.book.dto.user.response.BookSearchResponseDto;
+import com.example.library.domain.book.dto.user.response.BookUpdateResponseDto;
+import com.example.library.domain.book.service.BookConnectService;
+import com.example.library.domain.book.service.BookRankService;
+import com.example.library.domain.book.service.BookUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/book/user")
+@Tag(name = "book/user 도메인")
+public class BookUserController {
+
+    BookUserService bookUserService;
+    BookRankService bookRankService;
+    BookConnectService bookConnectService;
+
+    public BookUserController(BookUserService bookUserService,
+        BookRankService bookRankService, BookConnectService bookConnectService) {
+        this.bookUserService = bookUserService;
+        this.bookRankService = bookRankService;
+        this.bookConnectService = bookConnectService;
+    }
+
+
+    @Operation(summary = "대출하려는 도서 정보 요청", description = "프론트에서 저장된 책 정보를 요청하는 API 입니다.")
+    @PostMapping("/front")
+    public ResponseEntity<BookFrontResponseDto> bookInfoFront(
+        @RequestBody BookFrontRequestDto bookFrontRequestDto) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(bookConnectService.getBookInfo(bookFrontRequestDto));
+    }
+
+    @Operation(summary = "도서 검색",
+        description = "사용자 또는 관리자가 도서 검색을 할 때의 API 입니다.\n\naction: 0: 제목, 1: 작가, 2: 출판사, 3:RFID")
+    @GetMapping("/search")
+    public ResponseEntity<BookSearchResponseDto> searchBook(
+        @RequestParam String searchString, @RequestParam int action) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(bookUserService.searchBook(searchString, action));
+    }
+
+    @Operation(summary = "주간/월간 대출 순위 리스트",
+        description = "사용자 화면에서 주간/월간 대출 리스트를 띄워줄 때 사용되는 API 입니다. \n\naction: 0이면 주간, 1이면 월간")
+    @GetMapping("/most")
+    public ResponseEntity<BookMostListResponseDto> bookMost(
+        @RequestParam int action) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookRankService.getBookMostList(action));
+    }
+
+    @Operation(summary = "도서 등록/도서 정보 수정",
+        description = "관리자가 도서관에 책 정보를 등록/수정할 때 사용되는 API 입니다\n\naction: 0이면 등록, 1이면 수정")
+    @PostMapping("")
+    public ResponseEntity<BookUpdateResponseDto> updateBook(
+        @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
+
+        if (bookUpdateRequestDto.getAction() == 0) {
+            bookUserService.insertBook(bookUpdateRequestDto);
+        }
+
+        if (bookUpdateRequestDto.getAction() == 1) {
+            bookUserService.updateBook(bookUpdateRequestDto);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new BookUpdateResponseDto(true, "등록/수정 완료!"));
+    }
+
+    @Operation(summary = "도서 상세 정보", description = "사용자가 도서를 클릭하면 상세 정보를 제공해주는 API 입니다.")
+    @GetMapping("/detail")
+    public ResponseEntity<BookDetailResponseDto> getBookDetail(@RequestParam String bookId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookUserService.getBookDetail(bookId));
+    }
+
+    @Operation(summary = "도서 삭제", description = "관리자가 도서관의 책 정보를 삭제할 때 이용하는 API 입니다.")
+    @DeleteMapping("")
+    public ResponseEntity<BookDeleteResponseDto> deleteBook(
+        @RequestBody BookDeleteRequestDto bookDeleteRequestDto) {
+
+        bookUserService.deleteBook(bookDeleteRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new BookDeleteResponseDto(true, "삭제 완료!"));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/entity/Book.java
+package com.example.library.domain.book.entity;
+
+import com.example.library.domain.arrivezone.entity.ArriveZone;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@Entity
+public class Book {
+
+    @Id
+    private String bookId;
+    private String bookIsbn;
+    private String bookTitle;
+    private String bookWriter;
+    private String bookPublisher;
+    private int bookStatus;
+    private String bookSign;
+    private LocalDateTime bookCreatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "arrive_zone_id")
+    private ArriveZone arriveZone;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    private List<BorrowRecord> borrowRecordList = new ArrayList<>();
+
+    public Book() {
+    }
+
+    public Book(String bookId, String bookIsbn, String bookTitle, String bookWriter,
+        String bookPublisher, int bookStatus, String bookSign, LocalDateTime bookCreatedAt,
+        ArriveZone arriveZone) {
+        this.bookId = bookId;
+        this.bookIsbn = bookIsbn;
+        this.bookTitle = bookTitle;
+        this.bookWriter = bookWriter;
+        this.bookPublisher = bookPublisher;
+        this.bookStatus = bookStatus;
+        this.bookSign = bookSign;
+        this.bookCreatedAt = bookCreatedAt;
+
+        this.arriveZone = arriveZone;
+        arriveZone.addBook(this);
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookIsbn() {
+        return bookIsbn;
+    }
+
+    public void setBookIsbn(String bookIsbn) {
+        this.bookIsbn = bookIsbn;
+    }
+
+    public String getBookTitle() {
+        return bookTitle;
+    }
+
+    public void setBookTitle(String bookTitle) {
+        this.bookTitle = bookTitle;
+    }
+
+    public String getBookWriter() {
+        return bookWriter;
+    }
+
+    public void setBookWriter(String bookWriter) {
+        this.bookWriter = bookWriter;
+    }
+
+    public String getBookPublisher() {
+        return bookPublisher;
+    }
+
+    public void setBookPublisher(String bookPublisher) {
+        this.bookPublisher = bookPublisher;
+    }
+
+    public int getBookStatus() {
+        return bookStatus;
+    }
+
+    public void setBookStatus(int bookStatus) {
+        this.bookStatus = bookStatus;
+    }
+
+    public String getBookSign() {
+        return bookSign;
+    }
+
+    public void setBookSign(String bookSign) {
+        this.bookSign = bookSign;
+    }
+
+    public LocalDateTime getBookCreatedAt() {
+        return bookCreatedAt;
+    }
+
+    public void setBookCreatedAt(LocalDateTime bookCreatedAt) {
+        this.bookCreatedAt = bookCreatedAt;
+    }
+
+    public ArriveZone getArriveZone() {
+        return arriveZone;
+    }
+
+    public void setArriveZone(ArriveZone arriveZone) {
+        this.arriveZone.deleteBook(this);
+        arriveZone.addBook(this);
+
+        this.arriveZone = arriveZone;
+    }
+
+    public List<BorrowRecord> getBorrowRecordList() {
+        return borrowRecordList;
+    }
+
+    public void addBorrowRecord(BorrowRecord borrowRecord) {
+        if (borrowRecordList.contains(borrowRecord)) {
+            return;
+        }
+
+        borrowRecordList.add(borrowRecord);
+    }
+
+    public LocalDate getBookReturn() {
+        if (borrowRecordList.size() == 0 || bookStatus != 0) {
+            return null;
+        }
+
+        return borrowRecordList.get(borrowRecordList.size() - 1)
+            .getBorrowAt()
+            .plusWeeks(2)
+            .toLocalDate();
+    }
+
+    public BorrowRecord getLastBorrowRecord() {
+        if (borrowRecordList.size() == 0 || bookStatus != 0) {
+            throw new NoSuchElementException("대출 기록이 없습니다");
+        }
+
+        return borrowRecordList.get(borrowRecordList.size() - 1);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/entity/BookRank.java
+package com.example.library.domain.book.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
+
+@Entity
+public class BookRank {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rank_id")
+    private int rankId;
+    private int borrowCount;
+    private int rankingPeriod;
+    private LocalDate updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+    public BookRank() {
+    }
+
+    public int getBorrowCount() {
+        return borrowCount;
+    }
+
+    public int getRankingPeriod() {
+        return rankingPeriod;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/entity/BookStatus.java
+package com.example.library.domain.book.entity;
+
+public enum BookStatus {
+    BORROW("대출 중"),
+    EXIST("대출 가능"),
+    LOADING("정리 중");
+
+    private final String statusDisc;
+
+    BookStatus(String statusDisc) {
+        this.statusDisc = statusDisc;
+    }
+
+    public String getStatusDisc() {
+        return this.statusDisc;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/entity/BorrowRecord.java
+package com.example.library.domain.book.entity;
+
+import com.example.library.domain.user.entity.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+public class BorrowRecord {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "borrow_record_id")
+    private int borrowRecordId;
+    private LocalDateTime borrowAt;
+    private LocalDateTime returnAt = null;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+    public BorrowRecord() {
+    }
+
+    public BorrowRecord(LocalDateTime borrowAt, User user, Book book) {
+        this.borrowAt = borrowAt;
+        setUser(user);
+        setBook(book);
+    }
+
+    public int getBorrowRecordId() {
+        return borrowRecordId;
+    }
+
+    public LocalDateTime getBorrowAt() {
+        return borrowAt;
+    }
+
+    public void setBorrowAt(LocalDateTime borrowAt) {
+        this.borrowAt = borrowAt;
+    }
+
+    public LocalDateTime getReturnAt() {
+        return returnAt;
+    }
+
+    public void setReturnAt(LocalDateTime returnAt) {
+        this.returnAt = returnAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+
+        user.addBorrowRecord(this);
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+
+        book.addBorrowRecord(this);
+    }
+
+    public String getBorrowRecordStatus() {
+        if (returnAt != null) {
+            return BorrowRecordStatus.RETURNED.getStatusDisc();
+        }
+
+        if (borrowAt.toLocalDate().plusWeeks(2).isBefore(LocalDate.now())) {
+            return BorrowRecordStatus.OVERDUE.getStatusDisc();
+        }
+
+        return BorrowRecordStatus.BORROWED.getStatusDisc();
+    }
+
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/entity/BorrowRecordStatus.java
+package com.example.library.domain.book.entity;
+
+public enum BorrowRecordStatus {
+    RETURNED("반납 완료"),
+    BORROWED("대출 중"),
+    OVERDUE("연체 중");
+
+    private final String statusDisc;
+
+    BorrowRecordStatus(String statusDisc) {
+        this.statusDisc = statusDisc;
+    }
+
+    public String getStatusDisc() {
+        return this.statusDisc;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/mapper/BookMapper.java
+package com.example.library.domain.book.mapper;
+
+import com.example.library.domain.arrivezone.entity.ArriveZone;
+import com.example.library.domain.book.dto.BookDto;
+import com.example.library.domain.book.dto.user.request.BookUpdateRequestDto;
+import com.example.library.domain.book.dto.user.response.BookDetailResponseDto;
+import com.example.library.domain.book.dto.user.response.BookMostListResponseDto.BookRankDto;
+import com.example.library.domain.book.entity.Book;
+import com.example.library.domain.book.entity.BookRank;
+import com.example.library.domain.book.entity.BookStatus;
+import java.time.LocalDateTime;
+import org.springframework.stereotype.Component;
+
+@Component
+public class BookMapper {
+
+    public Book updateDtoToEntity(BookUpdateRequestDto bookUpdateRequestDto,
+        ArriveZone arriveZone) {
+
+        return new Book(
+            bookUpdateRequestDto.getBookId(),
+            bookUpdateRequestDto.getBookIsbn(),
+            bookUpdateRequestDto.getBookTitle(),
+            bookUpdateRequestDto.getBookWriter(),
+            bookUpdateRequestDto.getBookPublisher(),
+            bookUpdateRequestDto.getBookStatus(),
+            bookUpdateRequestDto.getBookSign(),
+            LocalDateTime.now(),
+            arriveZone
+        );
+    }
+
+    public void updateEntity(Book targetBook, BookUpdateRequestDto bookUpdateRequestDto,
+        ArriveZone arriveZone) {
+
+        targetBook.setBookId(bookUpdateRequestDto.getBookId());
+        targetBook.setBookIsbn(bookUpdateRequestDto.getBookIsbn());
+        targetBook.setBookTitle(bookUpdateRequestDto.getBookTitle());
+        targetBook.setBookWriter(bookUpdateRequestDto.getBookWriter());
+        targetBook.setBookPublisher(bookUpdateRequestDto.getBookPublisher());
+        targetBook.setBookStatus(bookUpdateRequestDto.getBookStatus());
+        targetBook.setBookSign(bookUpdateRequestDto.getBookSign());
+        targetBook.setBookCreatedAt(LocalDateTime.now());
+        targetBook.setArriveZone(arriveZone);
+    }
+
+    public BookDto entityToDto(Book book) {
+
+        return new BookDto(
+            book.getBookId(),
+            book.getBookIsbn(),
+            BookStatus.values()[book.getBookStatus()].getStatusDisc(),
+            book.getBookSign(),
+            book.getBookReturn(),
+            book.getArriveZone().getArriveZoneName()
+        );
+    }
+
+    public BookDetailResponseDto entityToDetailDto(Book book) {
+        return new BookDetailResponseDto(
+            book.getBookId(),
+            book.getBookIsbn(),
+            BookStatus.values()[book.getBookStatus()].getStatusDisc(),
+            book.getBookSign(),
+            book.getBookReturn()
+        );
+    }
+
+    public BookRankDto entityToRankDto(BookRank bookRank) {
+        Book targetBook = bookRank.getBook();
+
+        return new BookRankDto(
+            targetBook.getBookId(),
+            targetBook.getBookIsbn(),
+            BookStatus.values()[targetBook.getBookStatus()].getStatusDisc(),
+            targetBook.getBookSign(),
+            targetBook.getBookReturn(),
+            bookRank.getBorrowCount()
+        );
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/service/BookConnectService.java
+package com.example.library.domain.book.service;
+
+import com.example.library.domain.book.dto.robot.request.BookRobotRequestDto;
+import com.example.library.domain.book.dto.user.request.BookFrontRequestDto;
+import com.example.library.domain.book.dto.user.response.BookFrontResponseDto;
+import com.example.library.domain.book.entity.Book;
+import com.example.library.domain.book.entity.BookStatus;
+import com.example.library.domain.book.repository.BookRepository;
+import com.example.library.domain.robot.repository.RobotRepository;
+import java.time.Duration;
+import java.util.NoSuchElementException;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class BookConnectService {
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private BookRepository bookRepository;
+    private RobotRepository robotRepository;
+
+    private final static String REDIS_KEY = "book_borrow/";
+
+    public BookConnectService(RedisTemplate<String, String> redisTemplate,
+        BookRepository bookRepository, RobotRepository robotRepository) {
+        this.redisTemplate = redisTemplate;
+        this.bookRepository = bookRepository;
+        this.robotRepository = robotRepository;
+    }
+
+    public void saveBookInfo(BookRobotRequestDto bookRobotRequestDto) {
+        if (!robotRepository.existsById(bookRobotRequestDto.getRobotId())) {
+            throw new NoSuchElementException("로봇 정보가 존재하지 않습니다!");
+        }
+
+        if (!bookRepository.existsById(bookRobotRequestDto.getBookId())) {
+            throw new NoSuchElementException("책 정보가 존재하지 않습니다!");
+        }
+
+        redisTemplate.opsForValue()
+            .set(REDIS_KEY + bookRobotRequestDto.getRobotId(),
+                bookRobotRequestDto.getBookId(), Duration.ofMinutes(5));
+    }
+
+    public BookFrontResponseDto getBookInfo(BookFrontRequestDto bookFrontRequestDto) {
+        String targetRedisKey = REDIS_KEY + bookFrontRequestDto.getRobotId();
+        String targetBookId = redisTemplate.opsForValue().get(targetRedisKey);
+
+        if (targetBookId == null) {
+            throw new NoSuchElementException("저장된 책 데이터가 없습니다.");
+        }
+
+        Book targetBook = bookRepository.findById(targetBookId)
+            .orElseThrow(() -> new NoSuchElementException("해당 바코드 데이터가 존재하지 않습니다."));
+
+        redisTemplate.delete(targetRedisKey);
+        return new BookFrontResponseDto(
+            targetBook.getBookId(),
+            targetBook.getBookIsbn(),
+            BookStatus.values()[targetBook.getBookStatus()].getStatusDisc()
+        );
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/service/BookRankService.java
+package com.example.library.domain.book.service;
+
+import com.example.library.domain.book.dto.user.response.BookMostListResponseDto;
+import com.example.library.domain.book.mapper.BookMapper;
+import com.example.library.domain.book.repository.BookRankRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class BookRankService {
+
+    BookRankRepository bookRankRepository;
+    BookMapper bookMapper;
+
+    public BookRankService(BookRankRepository bookRankRepository, BookMapper bookMapper) {
+        this.bookRankRepository = bookRankRepository;
+        this.bookMapper = bookMapper;
+    }
+
+    public BookMostListResponseDto getBookMostList(int action) {
+        return new BookMostListResponseDto(
+            bookRankRepository.findAllByRankPeriod(action).stream()
+                .map(bookRank -> bookMapper.entityToRankDto(bookRank))
+                .toList()
+        );
+    }
+
+    @Scheduled(cron = "0 0 3 * * MON") // 매주 월요일 새벽 3시
+    public void updateWeeklyTopBooks() {
+        bookRankRepository.updateWeeklyTopBooks();
+    }
+
+    @Scheduled(cron = "0 0 3 1 * *") // 매월 1일 새벽 3시
+    public void updateMonthlyTopBooks() {
+        bookRankRepository.updateMonthlyTopBooks();
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/service/BookRobotService.java
+package com.example.library.domain.book.service;
+
+import com.example.library.domain.arrivezone.entity.LibraryMap;
+import com.example.library.domain.book.dto.robot.request.BookBorrowRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookReturnEndRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookReturnStartRequestDto;
+import com.example.library.domain.book.dto.robot.response.BookReturnStartResponseDto;
+import com.example.library.domain.book.entity.Book;
+import com.example.library.domain.book.entity.BorrowRecord;
+import com.example.library.domain.book.repository.BookRepository;
+import com.example.library.domain.book.repository.BorrowRecordRepository;
+import com.example.library.domain.notice.entity.Notice;
+import com.example.library.domain.notice.repository.NoticeRepository;
+import com.example.library.domain.robot.entity.Robot;
+import com.example.library.domain.robot.entity.RobotLog;
+import com.example.library.domain.robot.repository.RobotLogRepository;
+import com.example.library.domain.robot.repository.RobotRepository;
+import com.example.library.domain.user.entity.User;
+import com.example.library.domain.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class BookRobotService {
+
+    BookRepository bookRepository;
+    BorrowRecordRepository borrowRecordRepository;
+    RobotRepository robotRepository;
+    RobotLogRepository robotLogRepository;
+    UserRepository userRepository;
+    NoticeRepository noticeRepository;
+
+    public BookRobotService(BookRepository bookRepository,
+        BorrowRecordRepository borrowRecordRepository, RobotRepository robotRepository,
+        RobotLogRepository robotLogRepository, UserRepository userRepository,
+        NoticeRepository noticeRepository) {
+
+        this.bookRepository = bookRepository;
+        this.borrowRecordRepository = borrowRecordRepository;
+        this.robotRepository = robotRepository;
+        this.robotLogRepository = robotLogRepository;
+        this.userRepository = userRepository;
+        this.noticeRepository = noticeRepository;
+    }
+
+    public void borrowBook(BookBorrowRequestDto bookBorrowRequestDto) {
+        User targetUser = userRepository.findById(bookBorrowRequestDto.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("해당 유저 데이터가 존재하지 않습니다."));
+
+        Book targetBook = bookRepository.findById(bookBorrowRequestDto.getBookId())
+            .orElseThrow(() -> new NoSuchElementException("해당 책 데이터가 존재하지 않습니다."));
+
+        if (targetBook.getBookStatus() != 1) {
+            throw new NoSuchElementException("이미 대출 중인 책입니다.");
+        }
+
+        Robot targetRobot = robotRepository.findById(bookBorrowRequestDto.getRobotId())
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇 데이터가 존재하지 않습니다."));
+
+        BorrowRecord newBorrowRecord = new BorrowRecord(LocalDateTime.now(), targetUser,
+            targetBook);
+
+        String borrowContent = createBorrowContent(targetRobot, targetUser, targetBook);
+
+        RobotLog newRobotLog = new RobotLog(2, borrowContent, LocalDateTime.now(), targetRobot);
+        newRobotLog.setRobotLogCompletedAt(LocalDateTime.now());
+
+        Notice newNotice = new Notice(LocalDateTime.now(), true, 2, borrowContent, targetRobot);
+
+        targetBook.setBookStatus(0);
+        borrowRecordRepository.save(newBorrowRecord);
+        robotLogRepository.save(newRobotLog);
+        noticeRepository.save(newNotice);
+    }
+
+    private String createBorrowContent(Robot targetRobot, User targetUser, Book targetBook) {
+        return "로봇 " + targetRobot.getRobotName() + " : "
+            + targetUser.getUserName() + "님이 "
+            + targetBook.getBookTitle() + "을(를) 대출";
+    }
+
+    public BookReturnStartResponseDto returnBookStart(
+        BookReturnStartRequestDto BookReturnStartRequestDto) {
+        Book targetBook = bookRepository.findById(BookReturnStartRequestDto.getBookId())
+            .orElseThrow(() -> new NoSuchElementException("해당 책 데이터가 존재하지 않습니다."));
+
+        Robot targetRobot = robotRepository.findById(BookReturnStartRequestDto.getRobotId())
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇 데이터가 존재하지 않습니다."));
+
+        if (targetBook.getBookStatus() == 0) {
+            BorrowRecord targetBorrowRecord = targetBook.getLastBorrowRecord();
+            targetBorrowRecord.setReturnAt(LocalDateTime.now());
+            targetBook.setBookStatus(1);
+        }
+
+        RobotLog newRobotLog = new RobotLog(
+            1, createReturnContent(targetRobot, targetBook),
+            LocalDateTime.now(), targetRobot);
+
+        LibraryMap libraryMap = targetBook.getArriveZone().getLibraryMap();
+
+        robotLogRepository.save(newRobotLog);
+        return new BookReturnStartResponseDto(
+            libraryMap.getLibraryMapX(), libraryMap.getLibraryMapY(), libraryMap.getLibraryMapW()
+        );
+    }
+
+    public void returnBookEnd(BookReturnEndRequestDto bookReturnEndRequestDto) {
+        Book targetBook = bookRepository.findById(bookReturnEndRequestDto.getBookId())
+            .orElseThrow(() -> new NoSuchElementException("해당 책 데이터가 존재하지 않습니다."));
+
+        Robot targetRobot = robotRepository.findById(bookReturnEndRequestDto.getRobotId())
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇 데이터가 존재하지 않습니다."));
+
+        Notice newNotice = new Notice(LocalDateTime.now(), true, 1,
+            createReturnContent(targetRobot, targetBook), targetRobot);
+
+        targetRobot.completeLastRobotLog();
+        noticeRepository.save(newNotice);
+        targetBook.getArriveZone().addBookCount();
+    }
+
+    private String createReturnContent(Robot targetRobot, Book targetBook) {
+        return "로봇 " + targetRobot.getRobotName() + " : "
+            + targetBook.getBookTitle() + "을(를) "
+            + targetBook.getArriveZone().getArriveZoneName() + "에 반납";
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/book/service/BookUserService.java
+package com.example.library.domain.book.service;
+
+import com.example.library.domain.arrivezone.entity.ArriveZone;
+import com.example.library.domain.arrivezone.repository.ArriveZoneRepository;
+import com.example.library.domain.book.dto.user.request.BookDeleteRequestDto;
+import com.example.library.domain.book.dto.user.request.BookUpdateRequestDto;
+import com.example.library.domain.book.dto.user.response.BookDetailResponseDto;
+import com.example.library.domain.book.dto.user.response.BookSearchResponseDto;
+import com.example.library.domain.book.entity.Book;
+import com.example.library.domain.book.mapper.BookMapper;
+import com.example.library.domain.book.repository.BookRepository;
+import com.example.library.domain.robot.repository.RobotRepository;
+import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class BookUserService {
+
+    BookRepository bookRepository;
+    BookMapper bookMapper;
+    ArriveZoneRepository arriveZoneRepository;
+    RobotRepository robotRepository;
+
+    public BookUserService(BookRepository bookRepository, ArriveZoneRepository arriveZoneRepository
+        , BookMapper bookMapper, RobotRepository robotRepository) {
+        this.bookRepository = bookRepository;
+        this.arriveZoneRepository = arriveZoneRepository;
+        this.bookMapper = bookMapper;
+        this.robotRepository = robotRepository;
+    }
+
+
+    public BookSearchResponseDto searchBook(String searchString, int action) {
+        List<Book> bookList = null;
+
+        if (action == 0) {
+            bookList = bookRepository.searchByBookTitle(searchString);
+        }
+        if (action == 1) {
+            bookList = bookRepository.searchByBookWriter(searchString);
+        }
+        if (action == 2) {
+            bookList = bookRepository.searchByBookPublisher(searchString);
+        }
+        if (action == 3) {
+            bookList = bookRepository.searchByBookId(searchString);
+        }
+
+        return new BookSearchResponseDto(bookList.stream()
+            .map(bookMapper::entityToDto)
+            .toList());
+    }
+
+    public void insertBook(BookUpdateRequestDto bookUpdateRequestDto) {
+        ArriveZone arriveZone = arriveZoneRepository.findByArriveZoneName(
+                bookUpdateRequestDto.getArriveZoneName())
+            .orElseThrow(() -> new NoSuchElementException("해당 회수 구역이 존재하지 않습니다."));
+
+        Book newBook = bookMapper.updateDtoToEntity(bookUpdateRequestDto, arriveZone);
+
+        bookRepository.save(newBook);
+    }
+
+    public void updateBook(BookUpdateRequestDto bookUpdateRequestDto) {
+        ArriveZone arriveZone = arriveZoneRepository.findByArriveZoneName(
+                bookUpdateRequestDto.getArriveZoneName())
+            .orElseThrow(() -> new NoSuchElementException("해당 회수 구역이 존재하지 않습니다."));
+
+        Book targetBook = bookRepository.findById(bookUpdateRequestDto.getBookId())
+            .orElseThrow(() -> new NoSuchElementException("해당 바코드 데이터가 존재하지 않습니다."));
+
+        bookMapper.updateEntity(targetBook, bookUpdateRequestDto, arriveZone);
+    }
+
+    public void deleteBook(BookDeleteRequestDto bookDeleteRequestDto) {
+        Book targetBook = bookRepository.findById(bookDeleteRequestDto.getBookId())
+            .orElseThrow(() -> new NoSuchElementException("해당 바코드 데이터가 존재하지 않습니다."));
+
+        bookRepository.delete(targetBook);
+    }
+
+    public BookDetailResponseDto getBookDetail(String bookId) {
+        Book targetBook = bookRepository.findById(bookId)
+            .orElseThrow(() -> new NoSuchElementException("해당 바코드 데이터가 존재하지 않습니다."));
+
+        return bookMapper.entityToDetailDto(targetBook);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/code/controller/CodeController.java
+package com.example.library.domain.code.controller;
+
+import com.example.library.domain.code.dto.request.CodeRequestDto;
+import com.example.library.domain.code.service.CodeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("api/code")
+@Tag(name = "QR 코드 도메인")
+public class CodeController {
+
+    CodeService codeService;
+
+    public CodeController(CodeService codeService) {
+        this.codeService = codeService;
+    }
+
+    @Operation(summary = "사용자 QR 코드 조회", description = "사용자가 대출을 하기 위해 QR 코드를 요청하는 API 입니다.")
+    @PostMapping("")
+    public ResponseEntity<byte[]> getCode(HttpServletRequest request) {
+
+        int userId = ((Long) request.getAttribute("userId")).intValue();
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_PNG)
+            .body(codeService.getCode(new CodeRequestDto(userId)));
+    }
+
+    @Operation(summary = "사용자 QR 코드 조회 - JWT 사용 x", description = "사용자가 대출을 하기 위해 QR 코드를 요청하는 API 입니다.")
+    @PostMapping("/2")
+    public ResponseEntity<byte[]> getCode2(@RequestBody CodeRequestDto codeRequestDto) {
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_PNG)
+            .body(codeService.getCode(new CodeRequestDto(codeRequestDto.getUserId())));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/code/service/CodeService.java
+package com.example.library.domain.code.service;
+
+import com.example.library.domain.code.dto.request.CodeRequestDto;
+import com.example.library.domain.user.entity.User;
+import com.example.library.domain.user.repository.UserRepository;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import jakarta.transaction.Transactional;
+import java.io.ByteArrayOutputStream;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class CodeService {
+
+    UserRepository userRepository;
+
+    public CodeService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public byte[] getCode(CodeRequestDto codeRequestDto) {
+        int width = 200;
+        int height = 200;
+
+        User targetUser = userRepository.findById(codeRequestDto.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다."));
+
+        // QR Code - Image 생성. : 1회성으로 생성해야 하기 때문에
+        // stream으로 Generate(1회성이 아니면 File로 작성 가능.)
+        try {
+            BitMatrix encode = new MultiFormatWriter()
+                .encode(targetUser.getUserCode(), BarcodeFormat.QR_CODE, width, height);
+            //output Stream
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            //Bitmatrix, file.format, outputStream
+            MatrixToImageWriter.writeToStream(encode, "PNG", out);
+
+            return out.toByteArray();
+
+        } catch (Exception e) {
+            throw new NoSuchElementException("QR 코드 작성 과정에서 오류!");
+        }
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/email/service/EmailService.java
+package com.example.library.domain.email.service;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+@Service
+public class EmailService {
+
+    private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
+
+    @Value("${MAIL_USERNAME}")
+    private String mailUser;
+
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
+    }
+
+    public void sendVerificationEmail(String recipientEmail, String verificationCode)
+        throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        // HTML 템플릿 적용
+        Context context = new Context();
+        context.setVariable("code", verificationCode);
+        String htmlContent = templateEngine.process("otp", context);
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("이메일 인증 코드입니다.");
+        helper.setText(htmlContent, true);
+        helper.setFrom(mailUser);
+
+        mailSender.send(message);
+    }
+
+    public void sendUserId(String recipientEmail, String userId) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        // HTML 템플릿 적용
+        Context context = new Context();
+        context.setVariable("userId", userId);
+        String htmlContent = templateEngine.process("userid", context);
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("해당 이메일로 가입된 아이디입니다.");
+        helper.setText(htmlContent, true);
+        helper.setFrom(mailUser);
+
+        mailSender.send(message);
+    }
+
+    public void sendUserPw(String recipientEmail, String userPassword) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        // HTML 템플릿 적용
+        Context context = new Context();
+        context.setVariable("userPassword", userPassword);
+        String htmlContent = templateEngine.process("password", context);
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("임시 비밀번호 보내드립니다.");
+        helper.setText(htmlContent, true);
+        helper.setFrom(mailUser);
+
+        mailSender.send(message);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/mqtt/controller/MqttController.java
+package com.example.library.domain.mqtt.controller;
+
+import com.example.library.domain.mqtt.dto.request.BookReturnDepartRequestDto;
+import com.example.library.domain.mqtt.dto.request.BookReturnFinishRequestDto;
+import com.example.library.domain.mqtt.dto.request.BookSaveRequestDto;
+import com.example.library.domain.mqtt.dto.request.RobotLogSaveRequestDto;
+import com.example.library.domain.mqtt.dto.request.UserSaveRequestDto;
+import com.example.library.domain.mqtt.dto.response.BookReturnDepartResponseDto;
+import com.example.library.domain.mqtt.dto.response.BookReturnFinishResponseDto;
+import com.example.library.domain.mqtt.dto.response.BookSaveResponseDto;
+import com.example.library.domain.mqtt.dto.response.RobotLogSaveResponseDto;
+import com.example.library.domain.mqtt.dto.response.UserSaveResponseDto;
+import com.example.library.domain.mqtt.service.MqttService;
+import com.example.library.domain.robot.service.RobotLogService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class MqttController {
+
+    private MqttService mqttService;
+    private RobotLogService robotLogService;
+
+    public MqttController(MqttService mqttService, RobotLogService robotLogService) {
+        this.mqttService = mqttService;
+        this.robotLogService = robotLogService;
+    }
+
+    public void saveBook(BookSaveRequestDto bookSaveRequestDto) throws JsonProcessingException {
+        BookSaveResponseDto bookSaveResponseDto;
+
+        try {
+            mqttService.saveBook(bookSaveRequestDto);
+            bookSaveResponseDto = new BookSaveResponseDto(
+                bookSaveRequestDto.getRobotId(), true, "책 정보 저장 성공");
+        } catch (Exception e) {
+            bookSaveResponseDto = new BookSaveResponseDto(
+                bookSaveRequestDto.getRobotId(), false, e.getMessage());
+        }
+
+        mqttService.sendMessage(
+            "queue/book/borrow/" + bookSaveRequestDto.getRobotId()
+            , mqttService.dtoToJson(bookSaveResponseDto));
+    }
+
+    public void saveUser(UserSaveRequestDto userSaveRequestDto) throws JsonProcessingException {
+        UserSaveResponseDto userSaveResponseDto;
+
+        try {
+            mqttService.saveUser(userSaveRequestDto);
+            userSaveResponseDto = new UserSaveResponseDto(
+                userSaveRequestDto.getRobotId(), true, "유저 정보 저장 성공");
+        } catch (Exception e) {
+            userSaveResponseDto = new UserSaveResponseDto(
+                userSaveRequestDto.getRobotId(), false, e.getMessage());
+        }
+
+        mqttService.sendMessage(
+            "queue/user/borrow/" + userSaveRequestDto.getRobotId()
+            , mqttService.dtoToJson(userSaveResponseDto));
+    }
+
+    public void bookReturnStart(BookReturnDepartRequestDto bookReturnDepartRequestDto)
+        throws JsonProcessingException {
+        BookReturnDepartResponseDto bookReturnStartResponseDto;
+
+        try {
+            mqttService.bookReturnStart(bookReturnDepartRequestDto);
+            bookReturnStartResponseDto = mqttService.bookReturnStart(bookReturnDepartRequestDto);
+        } catch (Exception e) {
+            bookReturnStartResponseDto = new BookReturnDepartResponseDto(
+                bookReturnDepartRequestDto.getRobotId(), false, -1, -1, -1);
+        }
+
+        mqttService.sendMessage(
+            "queue/book/return/start/" + bookReturnDepartRequestDto.getRobotId()
+            , mqttService.dtoToJson(bookReturnStartResponseDto));
+    }
+
+    public void bookReturnFinish(BookReturnFinishRequestDto bookReturnFinishRequestDto)
+        throws JsonProcessingException {
+
+        BookReturnFinishResponseDto bookReturnFinishResponseDto;
+
+        try {
+            mqttService.bookReturnFinish(bookReturnFinishRequestDto);
+            bookReturnFinishResponseDto = new BookReturnFinishResponseDto(
+                bookReturnFinishRequestDto.getRobotId(), true, "반납/반환 처리 완료!"
+            );
+        } catch (Exception e) {
+            bookReturnFinishResponseDto = new BookReturnFinishResponseDto(
+                bookReturnFinishRequestDto.getRobotId(), false, e.getMessage()
+            );
+        }
+
+        mqttService.sendMessage(
+            "queue/book/return/finish/" + bookReturnFinishRequestDto.getRobotId()
+            , mqttService.dtoToJson(bookReturnFinishResponseDto));
+    }
+
+    public void saveRobotLog(RobotLogSaveRequestDto robotLogSaveRequestDto)
+        throws JsonProcessingException {
+
+        RobotLogSaveResponseDto robotLogSaveResponseDto;
+
+        try {
+            robotLogService.saveRobotLog(robotLogSaveRequestDto);
+            robotLogSaveResponseDto = new RobotLogSaveResponseDto(
+                robotLogSaveRequestDto.getRobotId(), true, "로그 저장 완료!"
+            );
+        } catch (Exception e) {
+            robotLogSaveResponseDto = new RobotLogSaveResponseDto(
+                robotLogSaveRequestDto.getRobotId(), false, e.getMessage()
+            );
+        }
+
+        mqttService.sendMessage(
+            "queue/log/save/" + robotLogSaveRequestDto.getRobotId()
+            , mqttService.dtoToJson(robotLogSaveResponseDto));
+    }
+
+
+    public void sendErrorMessage(String payload, String message) {
+        mqttService.sendErrorMessage(payload, message);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/mqtt/service/MqttService.java
+package com.example.library.domain.mqtt.service;
+
+import com.example.library.domain.book.dto.robot.request.BookReturnEndRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookReturnStartRequestDto;
+import com.example.library.domain.book.dto.robot.request.BookRobotRequestDto;
+import com.example.library.domain.book.dto.robot.response.BookReturnStartResponseDto;
+import com.example.library.domain.book.service.BookConnectService;
+import com.example.library.domain.book.service.BookRobotService;
+import com.example.library.domain.mqtt.dto.HardwareDto;
+import com.example.library.domain.mqtt.dto.request.BookReturnDepartRequestDto;
+import com.example.library.domain.mqtt.dto.request.BookReturnFinishRequestDto;
+import com.example.library.domain.mqtt.dto.request.BookSaveRequestDto;
+import com.example.library.domain.mqtt.dto.request.UserSaveRequestDto;
+import com.example.library.domain.mqtt.dto.response.BookReturnDepartResponseDto;
+import com.example.library.domain.user.dto.request.UserRobotRequestDto;
+import com.example.library.domain.user.service.UserConnectService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.integration.mqtt.support.MqttHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MqttService {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private MessageChannel mqttOutboundChannel; // MQTT 발행 채널
+    private BookConnectService bookConnectService;
+    private UserConnectService userConnectService;
+    private BookRobotService bookRobotService;
+
+    public MqttService(MessageChannel mqttOutboundChannel, BookConnectService bookConnectService,
+        UserConnectService userConnectService, BookRobotService bookRobotService) {
+        this.mqttOutboundChannel = mqttOutboundChannel;
+        this.bookConnectService = bookConnectService;
+        this.userConnectService = userConnectService;
+        this.bookRobotService = bookRobotService;
+    }
+
+    public void sendMessage(String topic, String payload) {
+        Message<String> message = MessageBuilder
+            .withPayload(payload)
+            .setHeader(MqttHeaders.TOPIC, topic)
+            .build();
+        mqttOutboundChannel.send(message);
+    }
+
+    public String dtoToJson(HardwareDto hardwareDto) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(hardwareDto);
+    }
+
+    public void saveBook(BookSaveRequestDto bookSaveRequestDto) {
+        bookConnectService.saveBookInfo(
+            new BookRobotRequestDto(bookSaveRequestDto.getRobotId(), bookSaveRequestDto.getBookId())
+        );
+    }
+
+    public void saveUser(UserSaveRequestDto userSaveRequestDto) {
+        userConnectService.saveUserInfo(
+            new UserRobotRequestDto(userSaveRequestDto.getRobotId(),
+                userSaveRequestDto.getUserCode())
+        );
+    }
+
+    public BookReturnDepartResponseDto bookReturnStart(
+        BookReturnDepartRequestDto bookReturnDepartRequestDto) {
+
+        BookReturnStartResponseDto bookReturnStartResponseDto =
+            bookRobotService.returnBookStart(new BookReturnStartRequestDto(
+                bookReturnDepartRequestDto.getBookId(),
+                bookReturnDepartRequestDto.getRobotId()
+            ));
+
+        return new BookReturnDepartResponseDto(
+            bookReturnDepartRequestDto.getRobotId(), true,
+            bookReturnStartResponseDto.getLibraryMapX(),
+            bookReturnStartResponseDto.getLibraryMapY(),
+            bookReturnStartResponseDto.getLibraryMapW()
+        );
+    }
+
+    public void bookReturnFinish(BookReturnFinishRequestDto bookReturnFinishRequestDto) {
+        bookRobotService.returnBookEnd(new BookReturnEndRequestDto(
+            bookReturnFinishRequestDto.getBookId(),
+            bookReturnFinishRequestDto.getRobotId()
+        ));
+    }
+
+    public void sendErrorMessage(String payload, String message) {
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/mqtt/MqttHandler.java
+package com.example.library.domain.mqtt;
+
+import com.example.library.domain.mqtt.controller.MqttController;
+import com.example.library.domain.mqtt.dto.request.BookReturnDepartRequestDto;
+import com.example.library.domain.mqtt.dto.request.BookReturnFinishRequestDto;
+import com.example.library.domain.mqtt.dto.request.BookSaveRequestDto;
+import com.example.library.domain.mqtt.dto.request.RobotLogSaveRequestDto;
+import com.example.library.domain.mqtt.dto.request.UserSaveRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.Message;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MqttHandler {
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    private MqttController mqttController;
+
+    public MqttHandler(MqttController mqttController) {
+        this.mqttController = mqttController;
+    }
+
+    @ServiceActivator(inputChannel = "mqttInboundChannel")
+    public void handleMqttMessage(Message<String> message) {
+        String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
+        String payload = message.getPayload();
+
+        try {
+            switch (topic) {
+                case "topic/book/borrow" -> {
+                    BookSaveRequestDto bookSaveRequestDto = objectMapper.readValue(
+                        payload, BookSaveRequestDto.class);
+                    mqttController.saveBook(bookSaveRequestDto);
+                }
+                case "topic/user/borrow" -> {
+                    UserSaveRequestDto userSaveRequestDto = objectMapper.readValue(
+                        payload, UserSaveRequestDto.class);
+                    mqttController.saveUser(userSaveRequestDto);
+                }
+                case "topic/book/return/start" -> {
+                    BookReturnDepartRequestDto bookReturnDepartRequestDto = objectMapper.readValue(
+                        payload, BookReturnDepartRequestDto.class);
+                    mqttController.bookReturnStart(bookReturnDepartRequestDto);
+                }
+                case "topic/book/return/finish" -> {
+                    BookReturnFinishRequestDto bookReturnFinishRequestDto = objectMapper.readValue(
+                        payload, BookReturnFinishRequestDto.class);
+                    mqttController.bookReturnFinish(bookReturnFinishRequestDto);
+                }
+                case "topic/log/save" -> {
+                    RobotLogSaveRequestDto robotLogSaveRequestDto = objectMapper.readValue(
+                        payload, RobotLogSaveRequestDto.class);
+                    mqttController.saveRobotLog(robotLogSaveRequestDto);
+                }
+                default -> mqttController.sendErrorMessage(payload, "등록된 topic이 아니에요.");
+            }
+        } catch (Exception e) {
+            mqttController.sendErrorMessage(payload, "JSON 파싱 에러!");
+        }
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/notice/controller/NoticeController.java
+package com.example.library.domain.notice.controller;
+
+import com.example.library.domain.notice.dto.request.NoticeDeleteRequestDto;
+import com.example.library.domain.notice.dto.response.NewNoticeResponseDto;
+import com.example.library.domain.notice.dto.response.NoticeDeleteResponseDto;
+import com.example.library.domain.notice.dto.response.NoticeResponseDto;
+import com.example.library.domain.notice.service.NoticeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/notice")
+@Tag(name = "notice 도메인")
+public class NoticeController {
+
+    NoticeService noticeService;
+
+    public NoticeController(NoticeService noticeService) {
+        this.noticeService = noticeService;
+    }
+
+    @Operation(summary = "읽지 않은 알림 개수 조회", description = "읽지 않은 알림이 있는지 관리자 쪽애서 주기적으로 요청하는 API 입니다.")
+    @GetMapping("/new")
+    public ResponseEntity<NewNoticeResponseDto> checkUnreadNotice() {
+        return ResponseEntity.status(HttpStatus.OK).body(noticeService.getUnreadNotice());
+    }
+
+    @Operation(summary = "알림 리스트 조회", description = "알림 버튼(종 모양 버튼??)을 눌렀을 때, 알림 목록을 불러오는 API 입니다.")
+    @GetMapping("")
+    public ResponseEntity<NoticeResponseDto> showNoticeList() {
+        return ResponseEntity.status(HttpStatus.OK).body(noticeService.getNoticeList());
+    }
+
+    @Operation(summary = "알림 삭제", description = "특정 알림의 삭제 버튼을 누르면 알림이 삭제되는 API 입니다.")
+    @PostMapping("")
+    public ResponseEntity<NoticeDeleteResponseDto> deleteNotice(
+        @RequestBody NoticeDeleteRequestDto noticeDeleteRequestDto) {
+
+        noticeService.deleteNotice(noticeDeleteRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new NoticeDeleteResponseDto(true, "삭제 완료!"));
+
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/notice/entity/Notice.java
+package com.example.library.domain.notice.entity;
+
+import com.example.library.domain.robot.entity.Robot;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+
+@Entity
+public class Notice {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "notice_id")
+    private int noticeId;
+    private LocalDateTime noticeCreatedAt;
+    private boolean noticeStatus;
+    private int noticeType;
+    private String noticeContent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "robot_id")
+    private Robot robot;
+
+    public Notice() {
+    }
+
+    public Notice(LocalDateTime noticeCreatedAt, boolean noticeStatus, int noticeType,
+        String noticeContent, Robot robot) {
+        this.noticeCreatedAt = noticeCreatedAt;
+        this.noticeStatus = noticeStatus;
+        this.noticeType = noticeType;
+        this.robot = robot;
+        this.noticeContent = noticeContent;
+        robot.addNotice(this);
+    }
+
+    public int getNoticeId() {
+        return noticeId;
+    }
+
+    public LocalDateTime getNoticeCreatedAt() {
+        return noticeCreatedAt;
+    }
+
+    public void setNoticeCreatedAt(LocalDateTime noticeCreatedAt) {
+        this.noticeCreatedAt = noticeCreatedAt;
+    }
+
+    public boolean isNoticeStatus() {
+        return noticeStatus;
+    }
+
+    public void setNoticeStatus(boolean noticeStatus) {
+        this.noticeStatus = noticeStatus;
+    }
+
+    public int getNoticeType() {
+        return noticeType;
+    }
+
+    public void setNoticeType(int noticeType) {
+        this.noticeType = noticeType;
+    }
+
+    public String getNoticeContent() {
+        return noticeContent;
+    }
+
+    public void setNoticeContent(String noticeContent) {
+        this.noticeContent = noticeContent;
+    }
+
+    public Robot getRobot() {
+        return robot;
+    }
+
+    public void setRobot(Robot robot) {
+        this.robot = robot;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/notice/service/NoticeService.java
+package com.example.library.domain.notice.service;
+
+import com.example.library.domain.notice.dto.request.NoticeDeleteRequestDto;
+import com.example.library.domain.notice.dto.response.NewNoticeResponseDto;
+import com.example.library.domain.notice.dto.response.NoticeResponseDto;
+import com.example.library.domain.notice.dto.response.NoticeResponseDto.NoticeDto;
+import com.example.library.domain.notice.entity.Notice;
+import com.example.library.domain.notice.repository.NoticeRepository;
+import com.example.library.domain.robot.entity.RobotStatus;
+import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class NoticeService {
+
+    private NoticeRepository noticeRepository;
+
+    public NoticeService(NoticeRepository noticeRepository) {
+        this.noticeRepository = noticeRepository;
+    }
+
+    public NoticeResponseDto getNoticeList() {
+        return new NoticeResponseDto(noticeRepository.findAll().stream()
+            .map(this::changeToDto)
+            .toList()
+        );
+    }
+
+    private NoticeDto changeToDto(Notice notice) {
+        boolean targetNoticeStatus = notice.isNoticeStatus();
+        notice.setNoticeStatus(false);
+
+        return new NoticeDto(notice.getNoticeId(),
+            notice.getNoticeCreatedAt(),
+            targetNoticeStatus,
+            RobotStatus.values()[notice.getNoticeType()].getStatusDisc(),
+            notice.getNoticeContent(),
+            notice.getRobot().getRobotId());
+    }
+
+    public NewNoticeResponseDto getUnreadNotice() {
+        return new NewNoticeResponseDto(
+            noticeRepository.countUnreadNotice()
+        );
+    }
+
+    public void deleteNotice(NoticeDeleteRequestDto noticeDeleteRequestDto) {
+        Notice targetNotice = noticeRepository.findById(noticeDeleteRequestDto.getNoticeId())
+            .orElseThrow(() -> new NoSuchElementException("해당 알림 데이터가 존재하지 않습니다."));
+
+        noticeRepository.delete(targetNotice);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/otp/controller/OtpController.java
+package com.example.library.domain.otp.controller;
+
+import com.example.library.domain.email.service.EmailService;
+import com.example.library.domain.otp.dto.request.SendOtpRequestDto;
+import com.example.library.domain.otp.dto.request.VerifyOtpRequestDto;
+import com.example.library.domain.otp.dto.response.SendOtpResponseDto;
+import com.example.library.domain.otp.dto.response.VerifyOtpResponseDto;
+import com.example.library.domain.otp.service.OtpService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
+import java.util.Random;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/otp")
+@Tag(name = "otp 도메인 (인증 번호 관련)")
+public class OtpController {
+
+    private final OtpService otpService;
+    private final EmailService emailService;
+
+    public OtpController(OtpService otpService, EmailService emailService) {
+        this.otpService = otpService;
+        this.emailService = emailService;
+    }
+
+    @Operation(summary = "사용자 회원가입 시 이메일로 인증 번호 발송", description = "사용자가 회원 가입할 때, 이메일 인증 시 사용되는 API 입니다. ")
+    @PostMapping("/send")
+    public ResponseEntity<SendOtpResponseDto> sendOtp(
+        @RequestBody SendOtpRequestDto sendOtpRequestDto) {
+
+        String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+
+        otpService.saveOtp(sendOtpRequestDto, otp);
+        try {
+            emailService.sendVerificationEmail(sendOtpRequestDto.getUserEmail(), otp);
+        } catch (MessagingException e) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new SendOtpResponseDto(false, "인증 번호 발송 오류!"));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new SendOtpResponseDto(true, "인증 번호 발송!"));
+    }
+
+    @Operation(summary = "사용자 회원가입 시 이메일로 보낸 인증 번호 확인", description = "사용자가 회원 가입할 때, 이메일 인증 시 사용되는 API 입니다. ")
+    @PostMapping("/verify")
+    public ResponseEntity<VerifyOtpResponseDto> verifyOtp(
+        @RequestBody VerifyOtpRequestDto verifyOtpRequestDto) {
+
+        boolean isValid = otpService.validateOtp(verifyOtpRequestDto);
+        if (isValid) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new VerifyOtpResponseDto(true, "인증 성공!"));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(new VerifyOtpResponseDto(false, "인증 실패!"));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/otp/service/OtpService.java
+package com.example.library.domain.otp.service;
+
+import com.example.library.domain.otp.dto.request.SendOtpRequestDto;
+import com.example.library.domain.otp.dto.request.VerifyOtpRequestDto;
+import java.time.Duration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OtpService {
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public OtpService(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    // OTP 저장 (5분 TTL)
+    public void saveOtp(SendOtpRequestDto sendOtpRequestDto, String otp) {
+        redisTemplate.opsForValue()
+            .set(sendOtpRequestDto.getUserEmail(), otp, Duration.ofMinutes(5));
+    }
+
+    //OTP 검증
+
+    public boolean validateOtp(VerifyOtpRequestDto verifyOtpRequestDto) {
+        String storedOtp = redisTemplate.opsForValue().get(verifyOtpRequestDto.getUserEmail());
+        if (storedOtp != null && storedOtp.equals(verifyOtpRequestDto.getCertNumber())) {
+            return true;
+        }
+        return false;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/controller/RobotController.java
+package com.example.library.domain.robot.controller;
+
+import com.example.library.domain.robot.dto.request.RobotDeleteRequestDto;
+import com.example.library.domain.robot.dto.request.RobotInsertRequestDto;
+import com.example.library.domain.robot.dto.request.RobotUpdateRequestDto;
+import com.example.library.domain.robot.dto.response.RobotDeleteResponseDto;
+import com.example.library.domain.robot.dto.response.RobotInsertResponseDto;
+import com.example.library.domain.robot.dto.response.RobotLogResponseDto;
+import com.example.library.domain.robot.dto.response.RobotResponseDto;
+import com.example.library.domain.robot.dto.response.RobotUpdateResponseDto;
+import com.example.library.domain.robot.service.RobotService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("/api/robot")
+@Tag(name = "robot 도메인")
+public class RobotController {
+
+    private RobotService robotService;
+
+    public RobotController(RobotService robotService) {
+        this.robotService = robotService;
+    }
+
+    @Operation(summary = "로봇 리스트 조회", description = "관리자가 로봇 현황 배너를 클릭하면 요청되는 API 입니다.")
+    @GetMapping("")
+    public ResponseEntity<RobotResponseDto> showRobotList() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(robotService.getRobotList());
+    }
+
+    @Operation(summary = "로봇 활동 로그 조회", description = "로봇에서 책을 반납 또는 반환할 때의 API 입니다.")
+    @GetMapping("/log")
+    public ResponseEntity<RobotLogResponseDto> showRobotLog(@RequestParam int robotId) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(robotService.getRobotLog(robotId));
+    }
+
+    @Operation(summary = "로봇 정보 추가", description = "관리자가 로봇을 추가할 때의 API 입니다.")
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RobotInsertResponseDto> insertRobot(
+        @RequestPart RobotInsertRequestDto robotInsertRequestDto,
+        @RequestPart MultipartFile robotImage) {
+
+        if (robotService.insertRobot(robotInsertRequestDto, robotImage)) {
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new RobotInsertResponseDto(true, "생성 완료!"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new RobotInsertResponseDto(false, "이미 존재하는 로봇 이름입니다."));
+    }
+
+    @Operation(summary = "로봇 정보 수정", description = "관리자가 로봇 정보를 수정할 때의 API 입니다.")
+    @PutMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<RobotUpdateResponseDto> updateRobot(
+        @RequestPart RobotUpdateRequestDto robotUpdateRequestDto,
+        @RequestPart MultipartFile robotImage) {
+
+        robotService.updateRobot(robotUpdateRequestDto, robotImage);
+        if (robotService.updateRobot(robotUpdateRequestDto, robotImage)) {
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new RobotUpdateResponseDto(true, "수정 완료!"));
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new RobotUpdateResponseDto(false, "이미 존재하는 로봇 이름입니다."));
+    }
+
+    @Operation(summary = "로봇 정보 삭제", description = "관리자가 로봇 정보를 삭제할 때의 API 입니다.")
+    @DeleteMapping("")
+    public ResponseEntity<RobotDeleteResponseDto> deleteRobot(
+        @RequestBody RobotDeleteRequestDto robotDeleteRequestDto) {
+
+        robotService.deleteRobot(robotDeleteRequestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new RobotDeleteResponseDto(true, "삭제 완료!"));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/entity/Robot.java
+package com.example.library.domain.robot.entity;
+
+import com.example.library.domain.notice.entity.Notice;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@Entity
+public class Robot {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "robot_id")
+    private int robotId;
+    private String robotName;
+
+    @OneToMany(mappedBy = "robot", cascade = CascadeType.REMOVE)
+    private List<RobotLog> robotLogs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "robot", cascade = CascadeType.REMOVE)
+    private List<Notice> notices = new ArrayList<>();
+
+
+    public Robot() {
+    }
+
+    public Robot(String robotName) {
+        this.robotName = robotName;
+    }
+
+    public String getRobotName() {
+        return robotName;
+    }
+
+    public void setRobotName(String robotName) {
+        this.robotName = robotName;
+    }
+
+    public int getRobotId() {
+        return robotId;
+    }
+
+    public List<RobotLog> getRobotLogs() {
+        return robotLogs;
+    }
+
+    public String getRobotStatus() {
+        if (robotLogs.size() == 0) {
+            return "대기 중";
+        }
+
+        RobotLog lastRobotLog = robotLogs.get(robotLogs.size() - 1);
+        int lastRobotLogType = lastRobotLog.getRobotLogType();
+
+        if (lastRobotLogType == 0) {
+            return "정지";
+        }
+
+        if (lastRobotLogType == 2) {
+            return "대기 중";
+        }
+
+        if (lastRobotLog.getRobotLogCompletedAt() == null) {
+            return "작업 중";
+        }
+
+        return "대기 중";
+    }
+
+    public void addRobotLog(RobotLog robotLog) {
+        if (robotLogs.contains(robotLog)) {
+            return;
+        }
+
+        robotLogs.add(robotLog);
+    }
+
+    public void addNotice(Notice notice) {
+        if (notices.contains(notice)) {
+            return;
+        }
+
+        notices.add(notice);
+    }
+
+    public void completeLastRobotLog() {
+        if (robotLogs.size() == 0) {
+            throw new NoSuchElementException("해당 로봇의 로그가 존재하지 않습니다.");
+        }
+
+        RobotLog lastRobotLog = robotLogs.get(robotLogs.size() - 1);
+        if (lastRobotLog.getRobotLogCompletedAt() != null) {
+            throw new NoSuchElementException("이미 완료된 작업입니다.");
+        }
+
+        lastRobotLog.setRobotLogCompletedAt(LocalDateTime.now());
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/entity/RobotLog.java
+package com.example.library.domain.robot.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+
+@Entity
+public class RobotLog {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "robot_log_id")
+    private int robotLogId;
+    private int robotLogType;
+    private String robotLogContent;
+    private LocalDateTime robotLogCreatedAt;
+    private LocalDateTime robotLogCompletedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "robot_id")
+    private Robot robot;
+
+    public RobotLog() {
+    }
+
+    public RobotLog(int robotLogType, String robotLogContent, LocalDateTime robotLogCreatedAt,
+        Robot robot) {
+        super();
+        this.robotLogType = robotLogType;
+        this.robotLogContent = robotLogContent;
+        this.robotLogCreatedAt = robotLogCreatedAt;
+        setRobot(robot);
+    }
+
+    public int getRobotLogId() {
+        return robotLogId;
+    }
+
+    public int getRobotLogType() {
+        return robotLogType;
+    }
+
+    public void setRobotLogType(int robotLogType) {
+        this.robotLogType = robotLogType;
+    }
+
+    public String getRobotLogContent() {
+        return robotLogContent;
+    }
+
+    public void setRobotLogContent(String robotLogContent) {
+        this.robotLogContent = robotLogContent;
+    }
+
+    public LocalDateTime getRobotLogCreatedAt() {
+        return robotLogCreatedAt;
+    }
+
+    public void setRobotLogCreatedAt(LocalDateTime robotLogCreatedAt) {
+        this.robotLogCreatedAt = robotLogCreatedAt;
+    }
+
+    public LocalDateTime getRobotLogCompletedAt() {
+        return robotLogCompletedAt;
+    }
+
+    public void setRobotLogCompletedAt(LocalDateTime robotLogCompletedAt) {
+        this.robotLogCompletedAt = robotLogCompletedAt;
+    }
+
+    public Robot getRobot() {
+        return robot;
+    }
+
+    public void setRobot(Robot robot) {
+        this.robot = robot;
+        robot.addRobotLog(this);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/entity/RobotStatus.java
+package com.example.library.domain.robot.entity;
+
+public enum RobotStatus {
+    STOP("정지"),
+    RETURN("반납/반환"),
+    BORROW("대출"),
+    NOTICE("알림");
+
+    private final String statusDisc;
+
+    RobotStatus(String statusDisc) {
+        this.statusDisc = statusDisc;
+    }
+
+    public String getStatusDisc() {
+        return this.statusDisc;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/service/RobotLogService.java
+package com.example.library.domain.robot.service;
+
+import com.example.library.domain.mqtt.dto.request.RobotLogSaveRequestDto;
+import com.example.library.domain.notice.entity.Notice;
+import com.example.library.domain.notice.repository.NoticeRepository;
+import com.example.library.domain.robot.entity.Robot;
+import com.example.library.domain.robot.entity.RobotLog;
+import com.example.library.domain.robot.repository.RobotLogRepository;
+import com.example.library.domain.robot.repository.RobotRepository;
+import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class RobotLogService {
+
+    RobotRepository robotRepository;
+    RobotLogRepository robotLogRepository;
+    NoticeRepository noticeRepository;
+
+    public RobotLogService(RobotRepository robotRepository, RobotLogRepository robotLogRepository,
+        NoticeRepository noticeRepository) {
+        this.robotRepository = robotRepository;
+        this.robotLogRepository = robotLogRepository;
+        this.noticeRepository = noticeRepository;
+    }
+
+    public void saveRobotLog(RobotLogSaveRequestDto robotLogSaveRequestDto) {
+        Robot targetRobot = robotRepository.findById(robotLogSaveRequestDto.getRobotId())
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇이 존재하지 않습니다!"));
+
+        RobotLog newRobotLog = new RobotLog(
+            3, robotLogSaveRequestDto.getLogContent(), LocalDateTime.now(), targetRobot);
+        newRobotLog.setRobotLogCompletedAt(LocalDateTime.now());
+
+        robotLogRepository.save(newRobotLog);
+
+        if (robotLogSaveRequestDto.getSendNotice() == 1) {
+            Notice newNotice = new Notice(
+                LocalDateTime.now(), true, 3,
+                "로봇 " + targetRobot.getRobotName() + " : " + robotLogSaveRequestDto.getLogContent(),
+                targetRobot);
+
+            noticeRepository.save(newNotice);
+        }
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/service/RobotPhotoService.java
+package com.example.library.domain.robot.service;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.NoSuchElementException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+@Service
+public class RobotPhotoService {
+
+    @Value("${HTTPS_DOMAIN}")
+    private String httpsDomain;
+
+    private String uploadDir = "/robotphoto/";
+
+
+    public void uploadPhoto(int robotId, MultipartFile robotImage) {
+        try {
+            String filePath = "/tmp" + uploadDir + robotId + ".png";
+            Path path = Paths.get(filePath);
+            robotImage.transferTo(path.toFile()); // 파일 저장
+
+        } catch (IOException e) {
+            throw new NoSuchElementException("파일 생성 과정에서 오류");
+        }
+    }
+
+    public String getRobotPhotoUrl(int robotId) {
+        return "https://" + httpsDomain + uploadDir + robotId + ".png";
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/robot/service/RobotService.java
+package com.example.library.domain.robot.service;
+
+import com.example.library.domain.robot.dto.request.RobotDeleteRequestDto;
+import com.example.library.domain.robot.dto.request.RobotInsertRequestDto;
+import com.example.library.domain.robot.dto.request.RobotUpdateRequestDto;
+import com.example.library.domain.robot.dto.response.RobotLogResponseDto;
+import com.example.library.domain.robot.dto.response.RobotLogResponseDto.RobotLogDto;
+import com.example.library.domain.robot.dto.response.RobotResponseDto;
+import com.example.library.domain.robot.dto.response.RobotResponseDto.RobotDto;
+import com.example.library.domain.robot.entity.Robot;
+import com.example.library.domain.robot.entity.RobotLog;
+import com.example.library.domain.robot.entity.RobotStatus;
+import com.example.library.domain.robot.repository.RobotRepository;
+import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+@Service
+@Transactional
+public class RobotService {
+
+    private RobotRepository robotRepository;
+    private RobotPhotoService robotPhotoService;
+
+    public RobotService(RobotRepository robotRepository, RobotPhotoService robotPhotoService) {
+        this.robotRepository = robotRepository;
+        this.robotPhotoService = robotPhotoService;
+    }
+
+    public boolean insertRobot(RobotInsertRequestDto robotInsertRequestDto,
+        MultipartFile robotImage) {
+        if (robotRepository.existsByRobotName(robotInsertRequestDto.getRobotName())) {
+            return false;
+        }
+
+        Robot newRobot = new Robot(robotInsertRequestDto.getRobotName());
+
+        robotRepository.save(newRobot);
+        robotPhotoService.uploadPhoto(newRobot.getRobotId(), robotImage);
+
+        return true;
+    }
+
+    public boolean updateRobot(RobotUpdateRequestDto robotUpdateRequestDto,
+        MultipartFile robotImage) {
+        Robot targetRobot = robotRepository.findById(robotUpdateRequestDto.getRobotId())
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇 데이터가 존재하지 않습니다."));
+
+        if (!robotUpdateRequestDto.getRobotName().equals(targetRobot.getRobotName())
+            && robotRepository.existsByRobotName(robotUpdateRequestDto.getRobotName())) {
+            return false;
+        }
+
+        robotPhotoService.uploadPhoto(robotUpdateRequestDto.getRobotId(), robotImage);
+        targetRobot.setRobotName(robotUpdateRequestDto.getRobotName());
+
+        return true;
+    }
+
+    public void deleteRobot(RobotDeleteRequestDto robotDeleteRequestDto) {
+        Robot targetRobot = robotRepository.findById(robotDeleteRequestDto.getRobotId())
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇 데이터가 존재하지 않습니다."));
+
+        robotRepository.delete(targetRobot);
+    }
+
+    public RobotResponseDto getRobotList() {
+        return new RobotResponseDto(
+            robotRepository.findAll()
+                .stream()
+                .map(this::changeToRobotDto)
+                .toList()
+        );
+    }
+
+    private RobotDto changeToRobotDto(Robot robot) {
+        return new RobotDto(robot.getRobotId(), robot.getRobotName(),
+            robotPhotoService.getRobotPhotoUrl(robot.getRobotId()),
+            robot.getRobotStatus());
+    }
+
+    public RobotLogResponseDto getRobotLog(int robotId) {
+        Robot targetRobot = robotRepository.findById(robotId)
+            .orElseThrow(() -> new NoSuchElementException("해당 로봇 데이터가 존재하지 않습니다."));
+
+        return new RobotLogResponseDto(targetRobot.getRobotLogs().stream()
+            .map(this::changeToRobotLogDto)
+            .toList()
+        );
+    }
+
+    private RobotLogDto changeToRobotLogDto(RobotLog robotLog) {
+        return new RobotLogDto(RobotStatus.values()[robotLog.getRobotLogType()].getStatusDisc()
+            , robotLog.getRobotLogContent(), robotLog.getRobotLogCreatedAt(),
+            robotLog.getRobotLogCompletedAt());
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/token/controller/TokenController.java
+package com.example.library.domain.token.controller;
+
+import com.example.library.domain.token.exception.AuthorizationException;
+import com.example.library.domain.token.service.AccessTokenService;
+import com.example.library.domain.token.service.RefreshTokenService;
+import com.example.library.util.BaseResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/token")
+@Tag(name = "token 도메인")
+public class TokenController {
+
+    AccessTokenService accessTokenService;
+    RefreshTokenService refreshTokenService;
+
+    public TokenController(AccessTokenService accessTokenService,
+        RefreshTokenService refreshTokenService) {
+        this.accessTokenService = accessTokenService;
+        this.refreshTokenService = refreshTokenService;
+    }
+
+    @Operation(summary = "Access Token 다시 받기",
+        description = "Access Token이 만료되었을 때, 클라이언트가 Refresh Token과 함께 요청을 보내서, "
+            + "새로운 Access Token을 발급받는 데에 이용되는 API 입니다.")
+    @PostMapping("")
+    public ResponseEntity<BaseResponseDto> validateRefreshToken(HttpServletRequest request,
+        HttpServletResponse response) {
+
+        int userId = accessTokenService.getUserId(request);
+        if (!refreshTokenService.validateRefreshToken(request, userId)) {
+            refreshTokenService.deleteRefreshToken(userId);
+            throw new AuthorizationException("Refresh Token이 유효하지 않습니다.");
+        }
+
+        String newAccessToken = accessTokenService.generateAccessToken(userId);
+
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponseDto(true, "인증 완료!"));
+    }
+}
+
+
+```
+```back/library/src/main/java/com/example/library/domain/token/interceptor/AuthorizationInterceptor.java
+package com.example.library.domain.token.interceptor;
+
+import com.example.library.domain.token.service.AccessTokenService;
+import com.nimbusds.jwt.JWTClaimsSet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+@Component
+public class AuthorizationInterceptor implements HandlerInterceptor {
+
+    private final AccessTokenService accessTokenService;
+
+    public AuthorizationInterceptor(AccessTokenService accessTokenService) {
+        this.accessTokenService = accessTokenService;
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler)
+        throws Exception {
+
+        String accessToken = accessTokenService.resolveAccessToken(request);
+        System.out.println(accessToken);
+        if (accessToken != null) {
+            try {
+                JWTClaimsSet claims = accessTokenService.decryptJWE(accessToken);
+
+                if (accessTokenService.isValidAuthClaims(claims)) {
+
+                    return true;
+                }
+
+                throw new Exception("관리자 Access Token이 아닙니다.");
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write(e.getMessage());
+                return false;
+            }
+        }
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Access token required");
+        return false;
+    }
+}
+
+```
+```back/library/src/main/java/com/example/library/domain/token/interceptor/JweAuthenticationInterceptor.java
+package com.example.library.domain.token.interceptor;
+
+import com.example.library.domain.token.service.AccessTokenService;
+import com.nimbusds.jwt.JWTClaimsSet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+@Component
+public class JweAuthenticationInterceptor implements HandlerInterceptor {
+
+    private final AccessTokenService accessTokenService;
+
+    public JweAuthenticationInterceptor(AccessTokenService accessTokenService) {
+        this.accessTokenService = accessTokenService;
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler)
+        throws Exception {
+
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            return true;
+        }// 1. Access Token 추출 및 검증
+        
+        String accessToken = accessTokenService.resolveAccessToken(request);
+        System.out.println(accessToken);
+        if (accessToken != null) {
+            try {
+                JWTClaimsSet claims = accessTokenService.decryptJWE(accessToken);
+
+                // Access Token 유효성 확인
+                if (accessTokenService.isValidClaims(claims)) {
+                    request.setAttribute("userId", claims.getClaim("userId"));
+                    return true; // 유효한 Access Token이므로 요청 진행
+                }
+
+                throw new Exception();
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Access token expired");
+                return false;
+            }
+        }
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Access token required");
+        return false;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/token/service/AccessTokenService.java
+package com.example.library.domain.token.service;
+
+import com.example.library.domain.token.exception.AuthorizationException;
+import com.example.library.domain.token.exception.TokenException;
+import com.example.library.util.EncryptKeys;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.Payload;
+import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jose.crypto.RSAEncrypter;
+import com.nimbusds.jwt.JWTClaimsSet;
+import jakarta.servlet.http.HttpServletRequest;
+import java.security.PrivateKey;
+import java.text.ParseException;
+import java.time.Duration;
+import java.util.Date;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AccessTokenService {
+
+    private static final String AT_BLACK_LIST_PREFIX = "access_token_";
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public AccessTokenService(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    public String generateAccessToken(int userId) {
+        // JWT Claims
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+            .claim("userId", userId)
+            .expirationTime(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+            .build();
+
+        // JWE Header
+        JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.RSA_OAEP_256,
+            EncryptionMethod.A128GCM)
+            .contentType("JWT")
+            .build();
+
+        // JWE Object
+        JWEObject jweObject = new JWEObject(header, new Payload(claims.toJSONObject()));
+
+        // Encrypt JWE with RSA Public Key
+        try {
+            jweObject.encrypt(new RSAEncrypter(EncryptKeys.getPublicKey()));
+        } catch (JOSEException e) {
+            throw new TokenException("access token 암호화 과정에서 문제!");
+        }
+
+        redisTemplate.delete(AT_BLACK_LIST_PREFIX + userId);
+        return jweObject.serialize();
+    }
+
+    // JWE 검증 메서드
+    public JWTClaimsSet decryptJWE(String jweToken) throws ParseException, JOSEException {
+        // 1. JWE 토큰 파싱
+        JWEObject jweObject = JWEObject.parse(jweToken);
+
+        // 2. RSA 개인 키를 사용해 복호화
+        PrivateKey privateKey = EncryptKeys.getPrivateKey();
+        jweObject.decrypt(new RSADecrypter(privateKey));
+
+        // 3. Payload에서 JWT Claims 추출
+        String payload = jweObject.getPayload().toString();
+
+        // 4. Payload를 JWTClaimsSet으로 변환
+        return JWTClaimsSet.parse(payload);
+    }
+
+    // Payload 검증 메서드
+    public boolean isValidClaims(JWTClaimsSet claims) {
+        try {
+            // 1. 만료 시간 (exp) 검증
+            if (claims.getExpirationTime() == null || claims.getExpirationTime()
+                .before(new Date())) {
+                return false;
+            }
+
+            int userId = ((Long) claims.getClaim("userId")).intValue();
+
+            return !redisTemplate.hasKey(AT_BLACK_LIST_PREFIX + userId);
+
+            // 추가적인 검증 로직 필요시 여기에 추가
+        } catch (Exception e) {
+            throw new AuthorizationException("유효하지 않은 Access Token");
+        }
+    }
+
+    public boolean isValidAuthClaims(JWTClaimsSet claims) {
+        if (!isValidClaims(claims)) {
+            return false;
+        }
+
+        try {
+            int userId = ((Long) claims.getClaim("userId")).intValue();
+
+            return userId < 6;
+        } catch (Exception e) {
+            throw new AuthorizationException("유효하지 않은 Access Token");
+        }
+    }
+
+    public String resolveAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 제거
+        }
+        return null;
+    }
+
+    public int getUserId(HttpServletRequest request) {
+        try {
+            return ((Long) decryptJWE(resolveAccessToken(request)).getClaim("userId")).intValue();
+        } catch (Exception e) {
+            throw new AuthorizationException("유효하지 않은 Access Token");
+        }
+    }
+
+    public void addBlackList(int userId) {
+        redisTemplate.opsForValue()
+            .set(AT_BLACK_LIST_PREFIX + userId, "1", Duration.ofMinutes(30));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/token/service/RefreshTokenService.java
+package com.example.library.domain.token.service;
+
+import com.example.library.util.EncryptKeys;
+import com.example.library.util.OpenCrypt;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.util.UUID;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RefreshTokenService {
+
+    private static final String RT_PREFIX = "refresh_token_";
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public RefreshTokenService(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    public void insertRefreshToken(UUID refreshToken, int userId) {
+
+        String redisRefreshToken = encryptRefreshToken(refreshToken);
+
+        redisTemplate.opsForValue()
+            .set(RT_PREFIX + userId, redisRefreshToken, Duration.ofDays(30));
+    }
+
+
+    public boolean validateRefreshToken(HttpServletRequest request, int userId) {
+        String storedRefreshToken = redisTemplate.opsForValue().get(RT_PREFIX + userId);
+        UUID refreshToken = resolveRefreshToken(request);
+
+        if (storedRefreshToken == null || refreshToken == null) {
+            return false;
+        }
+
+        String requestRefreshToken = encryptRefreshToken(refreshToken);
+
+        return storedRefreshToken.equals(requestRefreshToken);
+    }
+
+    private String encryptRefreshToken(UUID refreshToken) {
+        return OpenCrypt.byteArrayToHex(
+            OpenCrypt.getSHA256(refreshToken.toString(), EncryptKeys.getRefreshTokenKey()));
+    }
+
+    private UUID resolveRefreshToken(HttpServletRequest request) {
+        // Refresh Token은 HttpOnly Cookie로 전달되므로 쿠키에서 추출
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return UUID.fromString(cookie.getValue());
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addRefreshTokenToCookie(HttpServletResponse response, UUID newRefreshToken) {
+        // HttpOnly Cookie로 refresh token 설정
+        Cookie cookie = new Cookie("refreshToken", newRefreshToken.toString());
+        cookie.setHttpOnly(true);  // HttpOnly 설정
+        cookie.setSecure(true);     // HTTPS 프로토콜을 사용할 때는 Secure 설정
+        cookie.setPath("/");       // 경로 설정
+        cookie.setMaxAge(60 * 60 * 24 * 30);  // 만료 시간 (예: 30일)// 크로스 도메인 허용
+        cookie.setAttribute("SameSite", "None");
+        response.addCookie(cookie);
+    }
+
+    public void deleteRefreshToken(int userId) {
+        redisTemplate.delete(RT_PREFIX + userId);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/token/service/TokenService.java
+package com.example.library.domain.token.service;
+
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+
+@Service
+public class TokenService {
+
+    AccessTokenService accessTokenService;
+    RefreshTokenService refreshTokenService;
+
+    public TokenService(AccessTokenService accessTokenService,
+        RefreshTokenService refreshTokenService) {
+
+        this.accessTokenService = accessTokenService;
+        this.refreshTokenService = refreshTokenService;
+    }
+
+    public void setTokens(int userId, HttpServletResponse response) {
+        String accessToken = accessTokenService.generateAccessToken(userId);
+
+        UUID refreshToken = UUID.randomUUID();
+        refreshTokenService.insertRefreshToken(refreshToken, userId);
+
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        refreshTokenService.addRefreshTokenToCookie(response, refreshToken);
+    }
+
+    public void userLogout(int userId) {
+        accessTokenService.addBlackList(userId);
+        refreshTokenService.deleteRefreshToken(userId);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/controller/UserAuthController.java
+package com.example.library.domain.user.controller;
+
+import com.example.library.domain.user.dto.auth.request.UserChangeRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserLoginRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserLogoutRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserSearchIdRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserSearchPwRequestDto;
+import com.example.library.domain.user.dto.auth.response.UserChangeResponseDto;
+import com.example.library.domain.user.dto.auth.response.UserLoginResponseDto;
+import com.example.library.domain.user.dto.auth.response.UserLogoutResponseDto;
+import com.example.library.domain.user.dto.auth.response.UserSearchIdResponseDto;
+import com.example.library.domain.user.dto.auth.response.UserSearchPwResponseDto;
+import com.example.library.domain.user.service.UserAuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/user/auth")
+@Tag(name = "user/auth 도메인")
+public class UserAuthController {
+
+    UserAuthService userAuthService;
+
+    public UserAuthController(UserAuthService userAuthService) {
+        this.userAuthService = userAuthService;
+    }
+
+
+    @Operation(summary = "사용자 아이디 찾기 - 이메일로 아이디 발송", description = "사용자가 아이디를 찾을 때 사용되는 API 입니다.")
+    @PostMapping("/searchid")
+    public ResponseEntity<UserSearchIdResponseDto> userSearchId(
+        @RequestBody UserSearchIdRequestDto userSearchIdRequestDto) {
+
+        try {
+            userAuthService.findUserId(userSearchIdRequestDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new UserSearchIdResponseDto(true, "이메일 발송 성공!"));
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new UserSearchIdResponseDto(false, "이메일 발송 실패!"));
+        }
+    }
+
+    @Operation(summary = "사용자 비밀번호 찾기 - 아이디, 생년월일과 연결된 이메일로 임시 비밀번호 발송", description = "사용자가 비밀번호를 찾을 때 사용되는 API 입니다.")
+    @PostMapping("/searchpw")
+    public ResponseEntity<UserSearchPwResponseDto> userSearchPw(
+        @RequestBody UserSearchPwRequestDto userSearchPwRequestDto) {
+
+        try {
+            userAuthService.findUserPw(userSearchPwRequestDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(new UserSearchPwResponseDto(true, "이메일 발송 성공!"));
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new UserSearchPwResponseDto(false, "이메일 발송 실패!"));
+        }
+    }
+
+    @Operation(summary = "사용자 로그인", description = "사용자가 로그인 할 때 사용되는 API 입니다.")
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponseDto> userLogin(HttpServletResponse response,
+        @RequestBody UserLoginRequestDto userLoginRequestDto) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userAuthService.userLogin(userLoginRequestDto, response));
+    }
+
+    @Operation(summary = "사용자 로그아웃", description = "사용자가 로그아웃 할 때 사용되는 API 입니다.")
+    @PostMapping("/logout")
+    public ResponseEntity<UserLogoutResponseDto> userLogout(HttpServletRequest request) {
+
+        int userId = ((Long) request.getAttribute("userId")).intValue();
+        userAuthService.userLogout(new UserLogoutRequestDto(userId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new UserLogoutResponseDto(true, "로그아웃 성공!"));
+    }
+
+    @Operation(summary = "사용자 비밀번호 변경 과정에서 비밀번호 재입력/수정",
+        description = "사용자가 비밀번호를 변경할 때 사용되는 API 입니다.\n\naction: 0이면 재입력, 1이면 수정")
+    @PostMapping("/change")
+    public ResponseEntity<UserChangeResponseDto> userChangePw(
+        @RequestBody UserChangeRequestDto userChangeRequestDto) {
+
+        userAuthService.changeUserPw(userChangeRequestDto);
+
+        if (userChangeRequestDto.getAction() == 0) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new UserChangeResponseDto(true, "비밀번호가 일치합니다."));
+        }
+
+        if (userChangeRequestDto.getAction() == 1) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new UserChangeResponseDto(true, "비밀번호가 변경되었습니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            new UserChangeResponseDto(false, "잘못된 접근입니다."));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/controller/UserController.java
+package com.example.library.domain.user.controller;
+
+import com.example.library.domain.user.dto.request.UserDupCheckRequestDto;
+import com.example.library.domain.user.dto.request.UserFrontRequestDto;
+import com.example.library.domain.user.dto.request.UserLeaveRequestDto;
+import com.example.library.domain.user.dto.request.UserRecordRequestDto;
+import com.example.library.domain.user.dto.request.UserRobotRequestDto;
+import com.example.library.domain.user.dto.request.UserSignUpRequestDto;
+import com.example.library.domain.user.dto.response.UserDupCheckResponseDto;
+import com.example.library.domain.user.dto.response.UserFrontResponseDto;
+import com.example.library.domain.user.dto.response.UserLeaveResponseDto;
+import com.example.library.domain.user.dto.response.UserRecordResponseDto;
+import com.example.library.domain.user.dto.response.UserRobotResponseDto;
+import com.example.library.domain.user.dto.response.UserSignUpResponseDto;
+import com.example.library.domain.user.service.UserConnectService;
+import com.example.library.domain.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/user")
+@Tag(name = "user 도메인")
+public class UserController {
+
+    UserService userService;
+    UserConnectService userConnectService;
+
+    public UserController(UserService userService, UserConnectService userConnectService) {
+        this.userService = userService;
+        this.userConnectService = userConnectService;
+    }
+
+    @Operation(summary = "대출 사용자 정보 저장", description = "로봇에서 사용자 바코드를 찍고 사용자 정보를 백엔드에 저장할 때 사용되는 API 입니다.")
+    @PostMapping("/save")
+    public ResponseEntity<UserRobotResponseDto> userInfoRobot(
+        @RequestBody UserRobotRequestDto userRobotRequestDto) {
+
+        userConnectService.saveUserInfo(userRobotRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new UserRobotResponseDto(true, "유저 정보 저장 성공!"));
+    }
+
+    @Operation(summary = "대출 사용자 정보 조회", description = "프론트에서 저장된 사용자 코드를 이용해 사용자 정보를 조회할 때 사용되는 API 입니다.")
+    @PostMapping("/front")
+    public ResponseEntity<UserFrontResponseDto> userInfoFront(
+        @RequestBody UserFrontRequestDto userFrontRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userConnectService.getUserInfo(userFrontRequestDto));
+    }
+
+    @Operation(summary = "사용자 아이디/이메일 중복 확인",
+        description = "사용자가 회원가입 시에 아이디 또는 이메일의 중복 확인을 할 때 사용되는 API 입니다.\n\naction: 0이면 아이디, 1이면 이메일")
+    @PostMapping("/dupcheck")
+    public ResponseEntity<UserDupCheckResponseDto> userDupCheck(
+        @RequestBody UserDupCheckRequestDto userDupCheckRequestDto) {
+
+        if (userService.dupCheck(userDupCheckRequestDto)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new UserDupCheckResponseDto(false, "이미 사용중입니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new UserDupCheckResponseDto(true, "사용 가능합니다."));
+    }
+
+    @Operation(summary = "사용자 회원 가입", description = "회원 가입 시에 요청되는 API 입니다.")
+    @PostMapping("/signup")
+    public ResponseEntity<UserSignUpResponseDto> userSignUp(
+        @RequestBody UserSignUpRequestDto userSignUpRequestDto) {
+
+        userService.addUser(userSignUpRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new UserSignUpResponseDto(true, "회원 가입 완료!"));
+    }
+
+    @Operation(summary = "사용자 대출 기록 조회", description = "사용자의 마이 페이지에서 대출 현황을 클릭했을 때 요청되는 API 입니다.")
+    @PostMapping("/search")
+    public ResponseEntity<UserRecordResponseDto> searchBook(HttpServletRequest request) {
+
+        int userId = ((Long) request.getAttribute("userId")).intValue();
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.getUserRecord(new UserRecordRequestDto(userId)));
+    }
+
+    @Operation(summary = "사용자 대출 기록 조회 - JWT 사용 x", description = "사용자의 마이 페이지에서 대출 현황을 클릭했을 때 요청되는 API 입니다.")
+    @PostMapping("/search2")
+    public ResponseEntity<UserRecordResponseDto> searchBook2(
+        @RequestBody UserRecordRequestDto userRecordRequestDto) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            userService.getUserRecord(new UserRecordRequestDto(userRecordRequestDto.getUserId())));
+    }
+
+    @Operation(summary = "사용자 회원 탈퇴", description = "사용자가 회원 탈퇴 시에 요청하는 API 입니다.")
+    @PostMapping("/leave")
+    public ResponseEntity<UserLeaveResponseDto> leaveUser(
+        HttpServletRequest request) {
+
+        int userId = ((Long) request.getAttribute("userId")).intValue();
+
+        userService.deleteUser(new UserLeaveRequestDto(userId));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new UserLeaveResponseDto(true, "회원 삭제 완료!"));
+    }
+
+    @Operation(summary = "사용자 회원 탈퇴 - JWT 사용 x", description = "사용자가 회원 탈퇴 시에 요청하는 API 입니다.")
+    @PostMapping("/leave2")
+    public ResponseEntity<UserLeaveResponseDto> leaveUser2(
+        @RequestBody UserLeaveRequestDto userLeaveRequestDto) {
+
+        userService.deleteUser(new UserLeaveRequestDto(userLeaveRequestDto.getUserId()));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new UserLeaveResponseDto(true, "회원 삭제 완료!"));
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/entity/Salt.java
+package com.example.library.domain.user.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Salt {
+
+    @Id
+    private int userId;
+    private String salt;
+
+    public Salt() {
+    }
+
+    public Salt(int userId, String salt) {
+        super();
+        this.userId = userId;
+        this.salt = salt;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/entity/User.java
+package com.example.library.domain.user.entity;
+
+import com.example.library.domain.book.entity.BorrowRecord;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private int userId;
+    private String userLoginId;
+    private String userPassword;
+    private String userName;
+    private String userEmail;
+    private LocalDate userBirth;
+    private LocalDate userCreatedAt;
+    private int userStatus;
+    private String userCode;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<BorrowRecord> borrowRecordList = new ArrayList<>();
+
+    public User() {
+    }
+
+    public User(String userLoginId, String userPassword, String userName, String userEmail,
+        LocalDate userBirth, LocalDate userCreatedAt, int userStatus, String userCode) {
+        this.userLoginId = userLoginId;
+        this.userPassword = userPassword;
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userBirth = userBirth;
+        this.userCreatedAt = userCreatedAt;
+        this.userStatus = userStatus;
+        this.userCode = userCode;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getUserLoginId() {
+        return userLoginId;
+    }
+
+    public void setUserLoginId(String userLoginId) {
+        this.userLoginId = userLoginId;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public LocalDate getUserBirth() {
+        return userBirth;
+    }
+
+    public void setUserBirth(LocalDate userBirth) {
+        this.userBirth = userBirth;
+    }
+
+    public LocalDate getUserCreatedAt() {
+        return userCreatedAt;
+    }
+
+    public void setUserCreatedAt(LocalDate userCreatedAt) {
+        this.userCreatedAt = userCreatedAt;
+    }
+
+    public int getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(int userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public List<BorrowRecord> getBorrowRecordList() {
+        return borrowRecordList;
+    }
+
+    public void addBorrowRecord(BorrowRecord borrowRecord) {
+        if (borrowRecordList.contains(borrowRecord)) {
+            return;
+        }
+
+        borrowRecordList.add(borrowRecord);
+    }
+
+    public String getUserBorrowStatus() {
+        if (userStatus != 0) {
+            return UserStatus.values()[userStatus].getStatusDisc() + " 유저입니다.";
+        }
+
+        long bookBorrowCount = borrowRecordList.stream()
+            .filter(borrowRecord -> borrowRecord.getReturnAt() == null)
+            .count();
+
+        if (bookBorrowCount >= 5) {
+            return "대출 한도에 도달하였습니다.";
+        }
+
+        return "대출 가능";
+    }
+
+    public boolean hasBorrowBook() {
+        return borrowRecordList.stream()
+            .anyMatch(borrowRecord -> borrowRecord.getReturnAt() == null);
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/entity/UserStatus.java
+package com.example.library.domain.user.entity;
+
+public enum UserStatus {
+    NORMAL("정상"),
+    INACTIVE("휴면"),
+    DELETED("탈퇴");
+
+    private final String statusDisc;
+
+    UserStatus(String statusDisc) {
+        this.statusDisc = statusDisc;
+    }
+
+    public String getStatusDisc() {
+        return this.statusDisc;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/service/UserAuthService.java
+package com.example.library.domain.user.service;
+
+import com.example.library.domain.email.service.EmailService;
+import com.example.library.domain.token.service.TokenService;
+import com.example.library.domain.user.dto.auth.request.UserChangeRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserLoginRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserLogoutRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserSearchIdRequestDto;
+import com.example.library.domain.user.dto.auth.request.UserSearchPwRequestDto;
+import com.example.library.domain.user.dto.auth.response.UserLoginResponseDto;
+import com.example.library.domain.user.entity.Salt;
+import com.example.library.domain.user.entity.User;
+import com.example.library.domain.user.repository.SaltRepository;
+import com.example.library.domain.user.repository.UserRepository;
+import com.example.library.util.OpenCrypt;
+import com.example.library.util.PasswordGenerator;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class UserAuthService {
+
+    UserRepository userRepository;
+    SaltRepository saltRepository;
+    EmailService emailService;
+    TokenService tokenService;
+
+    public UserAuthService(UserRepository userRepository, SaltRepository saltRepository,
+        EmailService emailService, TokenService tokenService) {
+        this.userRepository = userRepository;
+        this.saltRepository = saltRepository;
+        this.emailService = emailService;
+        this.tokenService = tokenService;
+    }
+
+    public void findUserId(UserSearchIdRequestDto userSearchIdRequestDto)
+        throws MessagingException {
+        User targetUser = userRepository.findByUserEmail(userSearchIdRequestDto.getUserEmail())
+            .orElseThrow(() -> new NoSuchElementException("해당 이메일로 가입된 유저가 존재하지 않습니다."));
+
+        emailService.sendUserId(targetUser.getUserEmail(), targetUser.getUserLoginId());
+    }
+
+    public String findUserPw(UserSearchPwRequestDto userSearchPwRequestDto)
+        throws MessagingException {
+        User targetUser = userRepository.findByUserLoginId(userSearchPwRequestDto.getUserLoginId())
+            .orElseThrow(() -> new NoSuchElementException("일치하는 정보를 갖는 유저가 존재하지 않습니다."));
+
+        if (!targetUser.getUserBirth().equals(userSearchPwRequestDto.getUserBirth())) {
+            throw new NoSuchElementException("일치하는 정보를 갖는 유저가 존재하지 않습니다.");
+        }
+
+        Salt targetSalt = saltRepository.findById(targetUser.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("데이터 베이스 오류!"));
+
+        String newPassword = PasswordGenerator.generatePassword(12);
+        String hashedPassword = OpenCrypt.byteArrayToHex(
+            OpenCrypt.getSHA256(newPassword, targetSalt.getSalt()));
+
+        targetUser.setUserPassword(hashedPassword);
+        emailService.sendUserPw(targetUser.getUserEmail(), newPassword);
+        return newPassword;
+    }
+
+    public UserLoginResponseDto userLogin(UserLoginRequestDto userLoginRequestDto,
+        HttpServletResponse response) {
+        User targetUser = userRepository.findByUserLoginId(userLoginRequestDto.getUserLoginId())
+            .orElseThrow(() -> new NoSuchElementException("아이디 또는 비밀번호가 잘못되었습니다."));
+
+        if (targetUser.getUserId() < 6) {
+            if (!targetUser.getUserPassword().equals(userLoginRequestDto.getUserPassword())) {
+                throw new NoSuchElementException("아이디 또는 비밀번호가 일치하지 않습니다.");
+            }
+
+            tokenService.setTokens(targetUser.getUserId(), response);
+
+            return new UserLoginResponseDto(targetUser.getUserId(), targetUser.getUserName());
+        }
+
+        Salt targetSalt = saltRepository.findById(targetUser.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("데이터 베이스 오류!"));
+
+        String hashedPassword = OpenCrypt.byteArrayToHex(
+            OpenCrypt.getSHA256(userLoginRequestDto.getUserPassword(), targetSalt.getSalt()));
+
+        if (!hashedPassword.equals(targetUser.getUserPassword())) {
+            throw new NoSuchElementException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        tokenService.setTokens(targetUser.getUserId(), response);
+
+        return new UserLoginResponseDto(targetUser.getUserId(), targetUser.getUserName());
+    }
+
+    public void changeUserPw(UserChangeRequestDto userChangeRequestDto) {
+        User targetUser = userRepository.findById(userChangeRequestDto.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("잘못된 접근입니다."));
+
+        String targetPassword;
+
+        if (targetUser.getUserId() < 6) {
+            targetPassword = userChangeRequestDto.getUserPassword();
+        } else {
+            Salt targetSalt = saltRepository.findById(targetUser.getUserId())
+                .orElseThrow(() -> new NoSuchElementException("데이터 베이스 오류!"));
+
+            targetPassword = OpenCrypt.byteArrayToHex(
+                OpenCrypt.getSHA256(userChangeRequestDto.getUserPassword(), targetSalt.getSalt()));
+        }
+        
+        if (userChangeRequestDto.getAction() == 0) {
+            if (!targetPassword.equals(targetUser.getUserPassword())) {
+                throw new NoSuchElementException("비밀번호가 일치하지 않습니다.");
+            }
+        }
+
+        if (userChangeRequestDto.getAction() == 1) {
+            targetUser.setUserPassword(targetPassword);
+        }
+    }
+
+    public void userLogout(UserLogoutRequestDto userLogoutRequestDto) {
+        tokenService.userLogout(userLogoutRequestDto.getUserId());
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/service/UserConnectService.java
+package com.example.library.domain.user.service;
+
+import com.example.library.domain.robot.repository.RobotRepository;
+import com.example.library.domain.user.dto.request.UserFrontRequestDto;
+import com.example.library.domain.user.dto.request.UserRobotRequestDto;
+import com.example.library.domain.user.dto.response.UserFrontResponseDto;
+import com.example.library.domain.user.entity.User;
+import com.example.library.domain.user.repository.UserRepository;
+import java.time.Duration;
+import java.util.NoSuchElementException;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserConnectService {
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private UserRepository userRepository;
+    private RobotRepository robotRepository;
+
+    private final static String REDIS_KEY = "user_borrow/";
+
+    public UserConnectService(RedisTemplate<String, String> redisTemplate,
+        UserRepository userRepository, RobotRepository robotRepository) {
+        this.redisTemplate = redisTemplate;
+        this.userRepository = userRepository;
+        this.robotRepository = robotRepository;
+    }
+
+    public void saveUserInfo(UserRobotRequestDto userRobotRequestDto) {
+        if (!robotRepository.existsById(userRobotRequestDto.getRobotId())) {
+            throw new NoSuchElementException("해당 로봇 정보가 존재하지 않습니다.");
+        }
+
+        if (!userRepository.existsByUserCode(userRobotRequestDto.getUserCode())) {
+            throw new NoSuchElementException("해당 유저 정보가 존재하지 않습니다.");
+        }
+
+        redisTemplate.opsForValue()
+            .set(REDIS_KEY + userRobotRequestDto.getRobotId(),
+                userRobotRequestDto.getUserCode(), Duration.ofMinutes(5));
+    }
+
+    public UserFrontResponseDto getUserInfo(UserFrontRequestDto userFrontRequestDto) {
+        String targetRedisKey = REDIS_KEY + userFrontRequestDto.getRobotId();
+        String targetUserCode = redisTemplate.opsForValue().get(targetRedisKey);
+
+        if (targetUserCode == null) {
+            throw new NoSuchElementException("저장된 유저 데이터가 없습니다.");
+        }
+
+        User targetUser = userRepository.findByUserCode(targetUserCode)
+            .orElseThrow(() -> new NoSuchElementException("해당 유저 정보가 존재하지 않습니다."));
+
+        redisTemplate.delete(targetRedisKey);
+        return new UserFrontResponseDto(
+            targetUser.getUserId(),
+            targetUser.getUserName(),
+            targetUser.getUserBorrowStatus()
+        );
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/user/service/UserService.java
+package com.example.library.domain.user.service;
+
+import com.example.library.domain.user.dto.PasswordEncryptionResultDto;
+import com.example.library.domain.user.dto.request.UserDupCheckRequestDto;
+import com.example.library.domain.user.dto.request.UserLeaveRequestDto;
+import com.example.library.domain.user.dto.request.UserRecordRequestDto;
+import com.example.library.domain.user.dto.request.UserSignUpRequestDto;
+import com.example.library.domain.user.dto.response.UserFrontResponseDto;
+import com.example.library.domain.user.dto.response.UserRecordResponseDto;
+import com.example.library.domain.user.entity.Salt;
+import com.example.library.domain.user.entity.User;
+import com.example.library.domain.user.mapper.UserMapper;
+import com.example.library.domain.user.repository.SaltRepository;
+import com.example.library.domain.user.repository.UserRepository;
+import com.example.library.util.OpenCrypt;
+import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class UserService {
+
+    UserRepository userRepository;
+    UserMapper userMapper;
+    SaltRepository saltRepository;
+
+    public UserService(UserRepository userRepository, UserMapper userMapper,
+        SaltRepository saltRepository) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.saltRepository = saltRepository;
+    }
+
+    public void addUser(UserSignUpRequestDto userSignUpRequestDto) {
+        PasswordEncryptionResultDto encryptionResult = OpenCrypt.encryptPw(
+            userSignUpRequestDto.getUserPassword());
+
+        User user = userMapper.signUpDtoToEntity(userSignUpRequestDto,
+            encryptionResult.getHashedPassword());
+
+        userRepository.save(user);
+        saltRepository.save(new Salt(user.getUserId(), encryptionResult.getSalt()));
+    }
+
+    public UserFrontResponseDto getUserInfo(String userCode) {
+        User targetUser = userRepository.findByUserCode(userCode)
+            .orElseThrow(() -> new NoSuchElementException("해당 바코드 정보가 존재하지 않습니다."));
+
+        return new UserFrontResponseDto(
+            targetUser.getUserId(),
+            targetUser.getUserName(),
+            targetUser.getUserBorrowStatus()
+        );
+    }
+
+    public boolean dupCheck(UserDupCheckRequestDto userDupCheckRequestDto) {
+        if (userDupCheckRequestDto.getAction() == 0) {
+            return userRepository.existsByUserLoginId(userDupCheckRequestDto.getTargetString());
+        }
+
+        return userRepository.existsByUserEmail(userDupCheckRequestDto.getTargetString());
+    }
+
+    public UserRecordResponseDto getUserRecord(UserRecordRequestDto userRecordRequestDto) {
+        User targetUser = userRepository.findById(userRecordRequestDto.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다."));
+
+        return new UserRecordResponseDto(targetUser.getBorrowRecordList().stream()
+            .map(borrowRecord -> userMapper.changeToDto(borrowRecord))
+            .toList());
+    }
+
+    public void deleteUser(UserLeaveRequestDto userLeaveRequestDto) {
+        User targetUser = userRepository.findById(userLeaveRequestDto.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다."));
+
+        Salt targetSalt = saltRepository.findById(userLeaveRequestDto.getUserId())
+            .orElseThrow(() -> new NoSuchElementException("데이터 베이스 오류!"));
+
+        if (targetUser.hasBorrowBook()) {
+            throw new NoSuchElementException("아직 대출 중인 도서가 있습니다.");
+        }
+
+        saltRepository.delete(targetSalt);
+        userRepository.delete(targetUser);
+    }
+
+}
+```
+```back/library/src/main/java/com/example/library/domain/websocket/controller/WebSocketController.java
+package com.example.library.domain.websocket.controller;
+
+import com.example.library.domain.websocket.dto.request.BookSaveRequestDto;
+import com.example.library.domain.websocket.dto.request.UserSaveRequestDto;
+import com.example.library.domain.websocket.dto.response.BookSaveResponseDto;
+import com.example.library.domain.websocket.dto.response.UserSaveResponseDto;
+import com.example.library.domain.websocket.service.WebSocketService;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class WebSocketController {
+
+    WebSocketService webSocketService;
+
+    public WebSocketController(WebSocketService webSocketService) {
+        this.webSocketService = webSocketService;
+    }
+
+    public BookSaveResponseDto saveBook(@Payload BookSaveRequestDto bookSaveRequestDto) {
+        BookSaveResponseDto bookSaveResponseDto;
+
+        try {
+            webSocketService.saveBook(bookSaveRequestDto);
+            bookSaveResponseDto = new BookSaveResponseDto(
+                bookSaveRequestDto.getRobotId(), true, "책 정보 저장 성공");
+        } catch (Exception e) {
+            bookSaveResponseDto = new BookSaveResponseDto(
+                bookSaveRequestDto.getRobotId(), false, e.getMessage());
+        }
+
+        return bookSaveResponseDto;
+    }
+
+    public UserSaveResponseDto saveUser(@Payload UserSaveRequestDto userSaveRequestDto) {
+
+        UserSaveResponseDto userSaveResponseDto;
+
+        try {
+            webSocketService.saveUser(userSaveRequestDto);
+            userSaveResponseDto = new UserSaveResponseDto(
+                userSaveRequestDto.getRobotId(), true, "유저 정보 저장 성공");
+        } catch (Exception e) {
+            userSaveResponseDto = new UserSaveResponseDto(
+                userSaveRequestDto.getRobotId(), false, e.getMessage());
+        }
+
+        return userSaveResponseDto;
+    }
+
+    @MessageMapping("/test")
+    @SendTo("/topic/test")
+    public String topicTest() {
+
+        return "테스트 통신이에요.";
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/websocket/service/WebSocketService.java
+package com.example.library.domain.websocket.service;
+
+import com.example.library.domain.book.dto.robot.request.BookRobotRequestDto;
+import com.example.library.domain.book.service.BookConnectService;
+import com.example.library.domain.user.dto.request.UserRobotRequestDto;
+import com.example.library.domain.user.service.UserConnectService;
+import com.example.library.domain.websocket.dto.request.BookSaveRequestDto;
+import com.example.library.domain.websocket.dto.request.UserSaveRequestDto;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+public class WebSocketService {
+
+    private BookConnectService bookConnectService;
+    private UserConnectService userConnectService;
+
+    public WebSocketService(BookConnectService bookConnectService,
+        UserConnectService userConnectService) {
+        this.bookConnectService = bookConnectService;
+        this.userConnectService = userConnectService;
+    }
+
+    public void saveBook(BookSaveRequestDto bookSaveRequestDto) {
+        bookConnectService.saveBookInfo(
+            new BookRobotRequestDto(bookSaveRequestDto.getRobotId(), bookSaveRequestDto.getBookId())
+        );
+    }
+
+    public void saveUser(UserSaveRequestDto userSaveRequestDto) {
+        userConnectService.saveUserInfo(
+            new UserRobotRequestDto(userSaveRequestDto.getRobotId(),
+                userSaveRequestDto.getUserCode())
+        );
+    }
+}
+```
+```back/library/src/main/java/com/example/library/domain/websocket/WebSocketHandler.java
+package com.example.library.domain.websocket;
+
+import com.example.library.domain.websocket.controller.WebSocketController;
+import com.example.library.domain.websocket.dto.request.BookSaveRequestDto;
+import com.example.library.domain.websocket.dto.request.UserSaveRequestDto;
+import com.example.library.domain.websocket.dto.response.BookSaveResponseDto;
+import com.example.library.domain.websocket.dto.response.UserSaveResponseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+@Component
+public class WebSocketHandler extends TextWebSocketHandler {
+
+    private ObjectMapper objectMapper = new ObjectMapper();  // JSON 처리
+
+    @Autowired
+    private WebSocketController webSocketController;
+
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        String payload = message.getPayload();  // 클라이언트에서 보낸 메시지
+
+        // 메시지 처리 (예: 책 정보 저장 요청)
+        if (payload.contains("bookId")) {
+            BookSaveRequestDto bookSaveRequestDto = objectMapper.readValue(
+                payload, BookSaveRequestDto.class);
+            // 실제 비즈니스 로직 수행 (책 저장)
+            BookSaveResponseDto bookSaveResponseDto =
+                webSocketController.saveBook(bookSaveRequestDto);
+            session.sendMessage(
+                new TextMessage(objectMapper.writeValueAsString(bookSaveResponseDto)));
+        }
+        // 메시지 처리 (예: 유저 정보 저장 요청)
+        else if (payload.contains("userCode")) {
+            UserSaveRequestDto userSaveRequestDto = objectMapper.readValue(
+                payload, UserSaveRequestDto.class);
+            // 실제 비즈니스 로직 수행 (유저 저장)
+            UserSaveResponseDto userSaveResponseDto =
+                webSocketController.saveUser(userSaveRequestDto);
+            session.sendMessage(
+                new TextMessage(objectMapper.writeValueAsString(userSaveResponseDto)));
+        }
+        // 다른 경우 처리
+        else {
+            // 특정 메시지 응답 (예: 테스트 메시지)
+            session.sendMessage(new TextMessage("테스트 통신이에요."));
+        }
+    }
+}
+```
+```back/library/src/main/java/com/example/library/util/Base58StringGenerator.java
+package com.example.library.util;
+
+import java.security.SecureRandom;
+
+public class Base58StringGenerator {
+
+    private static final String BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    private static final SecureRandom RANDOM = new SecureRandom();
+
+    public static String generateBase58String(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = RANDOM.nextInt(BASE58_ALPHABET.length());
+            sb.append(BASE58_ALPHABET.charAt(index));
+        }
+        return sb.toString();
+    }
+}
+```
+```back/library/src/main/java/com/example/library/util/BaseResponseDto.java
+package com.example.library.util;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class BaseResponseDto {
+
+    @JsonProperty("isDone")
+    private boolean isDone;
+    private String message;
+
+    public BaseResponseDto() {
+    }
+
+    public BaseResponseDto(boolean isDone, String message) {
+        this.isDone = isDone;
+        this.message = message;
+    }
+
+    @JsonProperty("isDone")
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/util/EncryptKeys.java
+package com.example.library.util;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
+
+public class EncryptKeys {
+
+    private static KeyPair JWE_KEY_PAIR;
+    private static String REFRESH_TOKEN_KEY;
+
+    static {
+        try {
+            KeyPairGenerator RSAGenerator = KeyPairGenerator.getInstance("RSA");
+            RSAGenerator.initialize(2048);
+            JWE_KEY_PAIR = RSAGenerator.generateKeyPair();
+
+            SecureRandom sr = new SecureRandom();
+            byte[] salt = new byte[16]; // 16바이트 (128비트) 추천
+            sr.nextBytes(salt);
+            REFRESH_TOKEN_KEY = Base64.getEncoder().encodeToString(salt);
+        } catch (NoSuchAlgorithmException e) {
+        }
+    }
+
+    public static RSAPublicKey getPublicKey() {
+        return (RSAPublicKey) JWE_KEY_PAIR.getPublic();
+    }
+
+    public static RSAPrivateKey getPrivateKey() {
+        return (RSAPrivateKey) JWE_KEY_PAIR.getPrivate();
+    }
+
+    public static String getRefreshTokenKey() {
+        return REFRESH_TOKEN_KEY;
+    }
+}
+```
+```back/library/src/main/java/com/example/library/util/OpenCrypt.java
+package com.example.library.util;
+
+import com.example.library.domain.user.dto.PasswordEncryptionResultDto;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+public class OpenCrypt {
+
+    public static PasswordEncryptionResultDto encryptPw(String source) {
+
+        SecureRandom sr = new SecureRandom();
+
+        byte[] saltbyte = new byte[20];
+
+        sr.nextBytes(saltbyte);
+
+        StringBuffer sb = new StringBuffer();
+        for (byte b : saltbyte) {
+            sb.append(String.format("%02x", b));
+        }
+
+        String salt = sb.toString();
+
+        byte[] hashedPw = getSHA256(source, salt);
+        String hashedPassword = byteArrayToHex(hashedPw);
+
+        return new PasswordEncryptionResultDto(hashedPassword, salt);
+    }
+
+    public static byte[] getSHA256(String source, String salt) {
+        byte[] byteData = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(source.getBytes());
+            md.update(salt.getBytes());
+            byteData = md.digest();
+            System.out.println(
+                "원문: " + source + "   SHA-256: " + byteData.length + "," + byteArrayToHex(
+                    byteData));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return byteData;
+    }
+
+    public static String byteArrayToHex(byte[] ba) {
+        if (ba == null || ba.length == 0) {
+            return null;
+        }
+
+        StringBuffer sb = new StringBuffer(ba.length * 2);
+        String hexNumber;
+        for (int x = 0; x < ba.length; x++) {
+            hexNumber = "0" + Integer.toHexString(0xff & ba[x]);
+
+            sb.append(hexNumber.substring(hexNumber.length() - 2));
+        }
+        return sb.toString();
+    }
+
+}
+```
+```back/library/src/main/java/com/example/library/util/PasswordGenerator.java
+package com.example.library.util;
+
+import java.security.SecureRandom;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+public class PasswordGenerator {
+
+    private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+    private static final String DIGITS = "0123456789";
+    private static final String SPECIAL = "!@#$%^&*()-_=+<>?";
+    private static final String ALL_CHARS = UPPER + LOWER + DIGITS + SPECIAL;
+
+    private static final Random random = new SecureRandom(); // 보안적으로 안전한 난수 생성기
+
+    public static String generatePassword(int length) {
+        // 필수 요소 하나씩 포함
+        String password = String.valueOf(UPPER.charAt(random.nextInt(UPPER.length()))) +
+            LOWER.charAt(random.nextInt(LOWER.length())) +
+            DIGITS.charAt(random.nextInt(DIGITS.length())) +
+            SPECIAL.charAt(random.nextInt(SPECIAL.length()));
+
+        // 나머지 길이만큼 무작위 문자 추가
+        password += IntStream.range(0, length - 4)
+            .mapToObj(i -> String.valueOf(ALL_CHARS.charAt(random.nextInt(ALL_CHARS.length()))))
+            .collect(Collectors.joining());
+
+        // 무작위로 섞기
+        return shuffleString(password);
+    }
+
+    private static String shuffleString(String input) {
+        char[] array = input.toCharArray();
+        for (int i = array.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            char temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return new String(array);
+    }
+}
+```
+```back/library/build.gradle
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.hibernate.orm:hibernate-core'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+    implementation 'mysql:mysql-connector-java:8.0.30'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // JWT dependencies
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // QR code
+    implementation group: 'com.google.zxing', name: 'javase', version: '3.5.0'
+    implementation group: 'com.google.zxing', name: 'core', version: '3.5.0'
+
+    // Bcrypt
+    implementation 'org.springframework.security:spring-security-crypto:5.8.0'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
+
+    // WebSocket(기본, MQTT)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-integration'
+    implementation 'org.springframework.integration:spring-integration-mqtt'
+
+    // Devtools and Docker Compose
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+    // Test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+```
+```back/library/docker-compose.yml
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    container_name: db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Seoul
+    restart: always
+    command: bash -c "chmod 044 /etc/my.cnf && docker-entrypoint.sh mysqld"
+    volumes:
+      - ./my.cnf:/etc/my.cnf
+      - ./db-init:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+
+  springboot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springboot-container
+    volumes:
+      - ./robotphoto:/robotphoto
+    environment:
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    container_name: redis-container
+    restart: always
+    ports:
+      - "6379:6379"
+
+  nginx:
+    image: nginx
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:r
+      - ./robotphoto:/robotphoto
+    depends_on:
+      - springboot
+
+  mqtt-broker:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:r
+```
