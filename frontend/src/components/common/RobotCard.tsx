@@ -30,7 +30,7 @@ const RobotCard: FC<RobotCardProps> = ({ robot }) => {
 
   return (
     <motion.div
-      className="overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out"
+      className="operation-card"
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.98 }}
       onClick={handleClick}
@@ -51,8 +51,8 @@ const RobotCard: FC<RobotCardProps> = ({ robot }) => {
           <h3 className="text-xl font-bold text-white">{robot.name}</h3>
         </div>
       </div>
-      <div className="p-4">
-        <p className="mb-2 text-sm text-gray-600">ID: {robot.id}</p>
+      <div className="p-5">
+        <p className="mb-2 text-xs font-bold tracking-widest text-gray-400">ROBOT #{robot.id}</p>
         <div className="flex items-center">
           {getStatusIcon(robot.status)}
           <p

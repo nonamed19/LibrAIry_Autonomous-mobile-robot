@@ -11,21 +11,17 @@ const ProfileCard: FC<ProfileCardProps> = ({
   borrowingCount,
   overdueCount,
 }) => (
-  <div className="p-4 mt-6 bg-peach rounded-lg shadow-md">
-    <div className="p-6 space-y-6">
-      <h3 className="text-white mb-2 text-xl font-semibold">
+  <div className="profile-summary">
+    <div>
+      <p className="page-eyebrow">LIBRARY STATUS</p>
+      <h3>
         {userName}님, 환영합니다!
       </h3>
-      <div className="mt-2 space-y-1">
-        <p className="text-white">
-          대출중:{" "}
-          <span className="font-bold text-blue">{borrowingCount}권</span>
-        </p>
-        <p className="text-white">
-          연체중:{" "}
-          <span className="font-bold text-primary">{overdueCount}권</span>
-        </p>
-      </div>
+      <p>현재 도서관 이용 현황입니다.</p>
+    </div>
+    <div className="profile-stats">
+      <div><span>대출 중</span><b>{borrowingCount}<small>권</small></b></div>
+      <div className={overdueCount > 0 ? "overdue" : ""}><span>연체 중</span><b>{overdueCount}<small>권</small></b></div>
     </div>
   </div>
 );

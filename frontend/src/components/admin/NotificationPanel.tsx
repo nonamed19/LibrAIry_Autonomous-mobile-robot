@@ -15,7 +15,7 @@ const NotificationPanel: FC<NotificationPanelProps> = ({
       {notices.map((notice) => (
         <div
           key={notice.id}
-          className="p-4 rounded-lg bg-white shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md"
+          className="notice-card"
         >
           <div className="flex justify-between items-start mb-2">
             <span

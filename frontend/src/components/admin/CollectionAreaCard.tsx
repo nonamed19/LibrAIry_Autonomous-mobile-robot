@@ -17,9 +17,10 @@ const CollectionAreaCard: FC<CollectionAreaCardProps> = ({
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3 }}
-    className="w-full p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+    className="collection-card"
   >
-    <h3 className="mb-4 text-2xl font-bold text-gray-800">{areaName}</h3>
+    <p className="page-eyebrow">COLLECTION ZONE</p>
+    <h3>{areaName}</h3>
     <div className="flex items-center mb-3">
       <Book className="w-5 h-5 mr-2 text-blue" />
       <p className="text-lg font-semibold text-gray-700">

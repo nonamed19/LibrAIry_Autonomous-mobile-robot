@@ -9,6 +9,7 @@ import {
   updateRobotService,
 } from "../../services/robotService";
 import type { Robot, RobotLog } from "../../types/robot";
+import PageHeader from "../../components/common/PageHeader";
 
 const LOG_BATCH_SIZE = 20;
 
@@ -219,13 +220,13 @@ const RobotDetail: FC = () => {
     );
 
   return (
-    <div className="min-h-screen py-8 bg-snow">
-      <div className="container px-4 mx-auto">
+    <div className="page-layout">
+      <PageHeader eyebrow="ROBOT OPERATIONS" title={robot.name} description={`로봇 ID ${robot.id} · ${robot.status}`} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-6 bg-white rounded-lg shadow-lg"
+          className="page-card p-6"
         >
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/3 mb-4 md:mb-0 md:mr-6">
@@ -418,7 +419,6 @@ const RobotDetail: FC = () => {
             )}
           </AnimatePresence>
         </motion.div>
-      </div>
     </div>
   );
 };

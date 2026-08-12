@@ -79,6 +79,7 @@ const FindId: React.FC = () => {
                 : "아이디 찾기"}
           </button>
         </form>
+      </div>
     </div>
   );
 };

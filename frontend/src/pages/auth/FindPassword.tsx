@@ -93,6 +93,7 @@ const FindPassword: React.FC = () => {
                 : "비밀번호 찾기"}
           </button>
         </form>
+      </div>
     </div>
   );
 };
