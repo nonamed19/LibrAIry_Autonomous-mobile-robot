@@ -1,61 +1,85 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# Editor and IDE settings
+.idea/
+.vscode/
+*.code-workspace
 *.iml
 *.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+*.iws
+.project
+.classpath
+.factorypath
+.settings/
+.apt_generated/
+.springBeans
+.sts4-cache/
+*.swp
+*.swo
+*~
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### 환경 변수 ###
+# Local configuration and secrets
 .env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+backend/src/main/resources/application-local.properties
 
-### Frontend ###
+# Frontend (React / Vite / TypeScript)
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend/*.tsbuildinfo
 
-### Backend generated files ###
-backend/.metadata/
+# Backend (Spring Boot / Gradle)
 backend/.gradle/
+backend/.metadata/
 backend/build/
+backend/target/
+backend/out/
+backend/robotphoto/
 
-### ROS and Python generated files ###
+# Python
+**/__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# ROS / catkin / colcon generated artifacts
 embedded/ros1/build/
 embedded/ros1/devel/
+embedded/ros1/install/
+embedded/ros1/log/
 embedded/ros1/build_isolated/
 embedded/ros1/devel_isolated/
+embedded/ros1/install_isolated/
+embedded/ros1/.catkin_tools/
 embedded/ros2/build/
 embedded/ros2/install/
 embedded/ros2/log/
-**/__pycache__/
-*.py[cod]
+*.bag
+*.bag.active
+*.db3
+
+# Runtime files and logs
 *.log
+embedded/ros1/src/imu_to_node/src/log.txt
+*.pid
+*.seed
+logs/

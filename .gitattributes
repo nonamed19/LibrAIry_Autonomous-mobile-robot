@@ -1,3 +1,43 @@
-/gradlew text eol=lf
+# Normalize text files in the repository to LF, regardless of the contributor's OS.
+* text=auto eol=lf
+
+# Windows launchers must retain CRLF for Windows shells.
 *.bat text eol=crlf
+
+# Source and configuration files are always text.
+*.java text eol=lf
+*.py text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.xml text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.properties text eol=lf
+*.sql text eol=lf
+*.launch text eol=lf
+*.rviz text eol=lf
+*.gv text eol=lf
+*.md text eol=lf
+
+# Binary assets and archives should not be line-ending normalized or diffed.
 *.jar binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.pgm binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary

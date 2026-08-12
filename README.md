@@ -35,6 +35,16 @@ SSAFY 공통 프로젝트 : 도서관 내 자율주행 로봇을 이용한 도�
 
 ## 시작 가이드
 
+### 저장소 구조
+
+```text
+backend/   Spring Boot API, DB 초기화 및 배포 구성
+frontend/  React/Vite 웹 애플리케이션
+embedded/  로봇 운영 코드와 ROS 워크스페이스
+```
+
+임베디드 영역의 운영 코드, ROS 패키지, 장치 수동 점검 코드는 각각의 역할에 맞게 분리되어 있습니다. 자세한 실행 경로는 [embedded/README.md](embedded/README.md)를 참고하세요.
+
 ### Requirements
 
 ```
