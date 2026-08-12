@@ -7,6 +7,7 @@ import {
 } from "../../services/noticeService";
 import { formatTDate } from "../../utils/formatters";
 import dayjs from "dayjs";
+import PageHeader from "../../components/common/PageHeader";
 
 const NotificationPage: FC = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
@@ -72,26 +73,18 @@ const NotificationPage: FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 bg-snow">
-      <div className="container px-4 mx-auto">
-        <h2 className="mt-6 mb-2 text-2xl font-bold">
-          <span className="text-primary">알림 내역</span>
-        </h2>
+    <div className="page-layout narrow">
+      <PageHeader eyebrow="OPERATION ALERTS" title="알림 내역" description="로봇과 회수 업무에서 발생한 최신 알림을 확인하세요." />
 
-        {error && <p className="text-orange">{error}</p>}
+        {error && <p className="page-feedback">{error}</p>}
 
         {loading ? (
           <p>로딩 중...</p>
         ) : notices.length === 0 ? (
-          <div className="flex items-center justify-center min-h-[50vh]">
-            <p className="text-gray-600 text-lg font-semibold">
-              현재 알림이 없습니다.
-            </p>
-          </div>
+          <div className="page-empty">현재 확인할 알림이 없습니다.</div>
         ) : (
           <NotificationPanel notices={notices} onDelete={handleDelete} />
         )}
-      </div>
     </div>
   );
 };

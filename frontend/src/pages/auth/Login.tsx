@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
+import PageHeader from "../../components/common/PageHeader";
 
 const LoginPage = () => {
   const [loginId, setLoginId] = useState("");
@@ -17,11 +18,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-snow">
-      <div className="w-full max-w-md p-6 bg-snow rounded-[var(--radius)]">
-        <h2 className="text-2xl font-bold mb-6 text-center text-[var(--color-foreground)]">
-          로그인
-        </h2>
+    <div className="page-layout narrow auth-layout">
+      <PageHeader eyebrow="WELCOME BACK" title="로그인" description="LibrAIry의 스마트 도서관 서비스를 이용하세요." />
+      <div className="auth-card">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
@@ -58,14 +57,11 @@ const LoginPage = () => {
             />
           </div>
           {error && <p className="text-sm text-orange">{error}</p>}
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-orange text-white rounded-md hover:bg-orange-hover focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)]"
-          >
+          <button type="submit" className="primary-action w-full justify-center py-3">
             로그인
           </button>
         </form>
-        <div className="mt-6 text-center sapce-y-2">
+        <div className="mt-6 flex justify-center gap-4 text-center text-sm">
           <Link to="/signup" className="text-orange hover:underline">
             회원가입
           </Link>

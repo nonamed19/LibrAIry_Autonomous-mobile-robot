@@ -2,6 +2,7 @@ import { FC, useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateBookService } from "../../services/bookService";
 import type { BookUpdateRequestDto } from "../../backapi/data-contracts";
+import PageHeader from "../../components/common/PageHeader";
 
 const BookRegistration: FC = () => {
   const navigate = useNavigate();
@@ -82,10 +83,10 @@ const BookRegistration: FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 bg-snow">
-      <div className="container max-w-lg px-4 mx-auto">
-        {error && <p className="mb-4 text-red-500">{error}</p>}
-        <form onSubmit={handleSubmit} className="p-6 rounded bg-snow">
+    <div className="page-layout narrow">
+      <PageHeader eyebrow="CATALOG MANAGEMENT" title="도서 등록" description="새 도서의 식별 정보와 회수 구역을 등록합니다." />
+        {error && <p className="page-feedback">{error}</p>}
+        <form onSubmit={handleSubmit} className="page-card p-6 sm:p-8">
           <div className="mb-4">
             <label className="block mb-1 text-lg font-bold" htmlFor="bookId">
               책 바코드
@@ -220,12 +221,11 @@ const BookRegistration: FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 text-white transition rounded bg-orange hover:bg-orange-hover"
+            className="primary-action w-full justify-center py-3"
           >
             {loading ? "등록 중..." : "도서 등록"}
           </button>
         </form>
-      </div>
     </div>
   );
 };

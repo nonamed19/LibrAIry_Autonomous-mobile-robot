@@ -4,6 +4,8 @@ import { useAuth } from "../hooks/useAuth";
 import { fetchUserRecords } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { BookMarked, ChevronRight, LogOut, Settings } from "lucide-react";
+import PageHeader from "../components/common/PageHeader";
 
 interface BorrowStats {
   borrowingCount: number;
@@ -61,36 +63,39 @@ const MyPage: FC = () => {
   }
 
   return (
-    <div>
-      <div className="container max-w-4xl px-4 py-8 mx-auto">
+    <div className="page-layout narrow">
+      <PageHeader eyebrow="MY ACCOUNT" title="마이 페이지" description="이용 현황과 계정 설정을 관리하세요." />
         <ProfileCard
           userName={user.userName}
           borrowingCount={borrowStats.borrowingCount}
           overdueCount={borrowStats.overdueCount}
         />
 
-        {/* 메뉴 섹션 */}
-        <div className="p-4 mt-6 bg-white rounded-lg shadow-md">
-          <ul className="space-y-4">
+        <div className="page-card mt-4 p-2">
+          <ul>
             <li>
               <button
-                className="w-full text-left text-blue-hover hover:underline"
+                className="account-menu-item"
                 onClick={() => navigate("/my-info")}
               >
-                내 정보 관리
+                <span><Settings size={19} /> 내 정보 관리</span><ChevronRight size={19} />
+              </button>
+            </li>
+            <li>
+              <button className="account-menu-item" onClick={() => navigate("/bookshelf")}>
+                <span><BookMarked size={19} /> 대출·반납 기록</span><ChevronRight size={19} />
               </button>
             </li>
             <li>
               <button
-                className="w-full text-left  text-blue-hover hover:underline"
-                onClick={logout}
+                className="account-menu-item danger"
+                onClick={() => void logout()}
               >
-                로그아웃
+                <span><LogOut size={19} /> 로그아웃</span><ChevronRight size={19} />
               </button>
             </li>
           </ul>
         </div>
-      </div>
     </div>
   );
 };

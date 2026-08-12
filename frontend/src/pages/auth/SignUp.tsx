@@ -8,6 +8,7 @@ import {
   verifyOtpService,
 } from "../../services/userService";
 import { isValidPassword, isValidName } from "../../utils/validators";
+import PageHeader from "../../components/common/PageHeader";
 
 interface ToastProps {
   message: string;
@@ -195,8 +196,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-snow">
-      <div className="w-full max-w-md p-6 bg-snow rounded-lg">
+    <div className="page-layout narrow auth-layout">
+      <PageHeader eyebrow="CREATE ACCOUNT" title="회원가입" description="이메일 인증 후 LibrAIry 계정을 만들어 보세요." />
+      <div className="auth-card">
         <div className="mb-6">
           <div className="h-2 bg-gray-200 rounded-full">
             <div

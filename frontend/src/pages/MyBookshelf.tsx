@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import dayjs from "dayjs";
 import { formatTDate } from "../utils/formatters";
 import type { BookCardHorizontal } from "../types/book";
+import PageHeader from "../components/common/PageHeader";
 
 const MyBookShelf: FC = () => {
   const [bookRecords, setBookRecords] = useState<BookCardHorizontal[]>([]);
@@ -63,11 +64,10 @@ const MyBookShelf: FC = () => {
   }, [user]);
 
   return (
-    <div>
-      <div className="min-h-screen pt-10">
-        <div className="container max-w-2xl px-4 mx-auto">
-          {" "}
-          {error && <p className="text-primary">{error}</p>}
+    <div className="page-layout narrow">
+      <PageHeader eyebrow="MY LIBRARY" title="내 책장" description="대출 중인 도서와 이전 이용 기록을 한곳에서 확인하세요." />
+        <div>
+          {error && <p className="page-feedback">{error}</p>}
           {loading ? (
             <div className="space-y-4">
               {[...Array(5)].map((_, idx) => (
@@ -85,13 +85,9 @@ const MyBookShelf: FC = () => {
               ))}
             </div>
           ) : bookRecords.length === 0 ? (
-            <div className="flex items-center justify-center min-h-[50vh]">
-              <p className="text-gray-600 text-lg font-semibold">
-                아직 도서관 이용 내역이 없습니다.
-              </p>
-            </div>
+            <div className="page-empty">아직 도서관 이용 내역이 없습니다.</div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {bookRecords.map((book) => (
                 <BookCardHorizontalComponent
                   key={`${book.id}-${book.borrowAt}-${book.returnAt}`}
@@ -104,7 +100,6 @@ const MyBookShelf: FC = () => {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 };

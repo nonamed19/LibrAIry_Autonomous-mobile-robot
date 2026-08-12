@@ -4,6 +4,7 @@ import { useRobot } from "../../hooks/useRobot";
 import RobotCard from "../../components/common/RobotCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
+import PageHeader from "../../components/common/PageHeader";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,19 +31,18 @@ const RobotManagement: FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 bg-gradient-to-b from-snow to-gray-100">
-      <div className="container px-4 mx-auto">
-        <div className="flex justify-end mb-6">
+    <div className="page-layout">
+      <PageHeader eyebrow="ROBOT OPERATIONS" title="로봇 관제" description="등록된 자율주행 로봇의 상태와 작업 기록을 관리합니다." actions={
           <motion.button
             onClick={handleAddRobot}
-            className="flex items-center px-4 py-2 text-white rounded-full bg-primary hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+            className="primary-action"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <Plus size={20} className="mr-2" />
             로봇 추가
           </motion.button>
-        </div>
+      } />
 
         {loading && (
           <div className="flex items-center justify-center h-64">
@@ -51,13 +51,13 @@ const RobotManagement: FC = () => {
         )}
 
         {error && (
-          <div className="p-4 mb-6 text-red-700 bg-red-100 rounded-lg">
+          <div className="page-feedback">
             <p>{error}</p>
           </div>
         )}
 
         {!loading && robots.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-64">
+          <div className="page-empty">
             <p className="mb-4 text-xl text-gray-600">
               등록된 로봇이 없습니다.
             </p>
@@ -89,7 +89,6 @@ const RobotManagement: FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
     </div>
   );
 };

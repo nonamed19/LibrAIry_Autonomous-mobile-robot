@@ -2,6 +2,7 @@ import { FC, useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { insertRobotService } from "../../services/robotService";
 import { motion, AnimatePresence } from "framer-motion";
+import PageHeader from "../../components/common/PageHeader";
 
 const pageVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -87,24 +88,24 @@ const RobotRegistration: FC = () => {
 
   return (
     <motion.div
-      className="min-h-screen py-8 bg-snow"
+      className="page-layout narrow"
       variants={pageVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
-      <div className="container max-w-lg px-4 mx-auto">
-        <h2 className="p-6 mb-6 text-3xl font-bold text-center">로봇 추가</h2>
+      <div>
+        <PageHeader eyebrow="ROBOT OPERATIONS" title="로봇 추가" description="관제에 사용할 로봇 이름과 대표 이미지를 등록합니다." />
         <motion.form
           onSubmit={handleSubmit}
-          className="p-6 rounded bg-snow"
+          className="page-card p-6 sm:p-8"
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1, transition: { duration: 0.3 } }}
         >
           <AnimatePresence>
             {error && (
               <motion.p
-                className="mb-4 text-red-500"
+                className="page-feedback"
                 variants={errorVariants}
                 initial="hidden"
                 animate="visible"
@@ -163,7 +164,7 @@ const RobotRegistration: FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 mt-4 transition text-white bg-primary hover:bg-accent disabled:opacity-50 rounded-xl"
+            className="primary-action w-full justify-center py-3 mt-4 disabled:opacity-50"
           >
             {loading ? "등록 중..." : "로봇 등록"}
           </button>

@@ -1,6 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { fetchUserQrCode } from "../services/userService";
 import { useAuth } from "../hooks/useAuth";
+import { QrCode } from "lucide-react";
+import PageHeader from "../components/common/PageHeader";
 
 const QrcodePage: FC = () => {
   const { user } = useAuth();
@@ -54,21 +56,22 @@ const QrcodePage: FC = () => {
   }
 
   return (
-    <div>
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="mb-6 text-3xl font-bold">{user.userName}</h2>
+    <div className="page-layout narrow">
+      <PageHeader eyebrow="MOBILE MEMBERSHIP" title="모바일 회원증" description="대출 로봇에 아래 QR 코드를 보여 주면 회원 확인이 시작됩니다." />
+      <div className="member-card">
+        <div className="member-card-icon"><QrCode size={24} /></div>
+        <p className="page-eyebrow">{user.userName.toUpperCase()} MEMBER</p>
+        <h2>{user.userName}님의 회원증</h2>
         {loading ? (
-          <p className="text-gray-500">로딩 중...</p>
+          <span className="kiosk-spinner member-spinner" />
         ) : qrImage ? (
-          <div className="p-4 bg-white rounded shadow-md">
+          <div className="qr-frame">
             <img src={qrImage} alt="QR 코드" className="w-60 h-60" />
           </div>
         ) : (
           <p className="text-gray-500">QR 코드를 표시할 수 없습니다.</p>
         )}
-        <p className="mt-4 text-gray-700">
-          QR코드로 책을 대출하실 수 있습니다.
-        </p>
+        <p>QR코드는 로그인한 본인만 사용할 수 있습니다.</p>
       </div>
     </div>
   );

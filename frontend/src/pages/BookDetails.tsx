@@ -5,6 +5,7 @@ import { formatDate } from "../utils/formatters";
 import { DetailedBook } from "../types/book";
 import { useAuth } from "../hooks/useAuth";
 import BookEditForm from "../components/admin/BookEditForm";
+import PageHeader from "../components/common/PageHeader";
 
 const LoadingState: FC = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -67,14 +68,12 @@ const BookDetail: FC = () => {
   if (!book) return <NotFoundState />;
 
   return (
-    <div className="relative min-h-screen p-4 overflow-hidden bg-transparent mt-10 sm:p-6 lg:p-8">
-      <BlurryBackground imageUrl={book.coverImageUrl} />
-
-      <div className="container relative z-10 mx-auto">
-        <div className="md:flex md:items-center md:space-x-6">
+    <div className="page-layout">
+      <PageHeader eyebrow="BOOK DETAILS" title="도서 상세" description="소장 상태와 청구기호, 도서 소개를 확인하세요." />
+        <div className="book-detail-layout">
           <BookCover imageUrl={book.coverImageUrl} title={book.title} />
 
-          <div className="w-full overflow-hidden transition-all duration-300 bg-white shadow-xl backdrop-blur-md rounded-xl hover:shadow-xl">
+          <div className="page-card w-full overflow-hidden">
             {isEditing ? (
               <BookEditForm book={book} setIsEditing={setIsEditing} />
             ) : (
@@ -102,17 +101,9 @@ const BookDetail: FC = () => {
             </span>
           </div>
         )}
-      </div>
     </div>
   );
 };
-
-const BlurryBackground: FC<{ imageUrl: string }> = ({ imageUrl }) => (
-  <div
-    className="absolute inset-0 bg-center bg-no-repeat bg-cover opacity-50 blur-xl"
-    style={{ backgroundImage: `url(${imageUrl})` }}
-  />
-);
 
 const BookCover: FC<{ imageUrl: string; title: string }> = ({
   imageUrl,

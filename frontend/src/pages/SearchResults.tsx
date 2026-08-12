@@ -7,6 +7,7 @@ import { fillBookDetailsKakao } from "../utils/fillBookDetailsKakao";
 import BookCardHorizontalComponent from "../components/common/BookCardHorizontal";
 import SearchBarv2 from "../components/common/SearchBarv2";
 import { transformBookDtoToBookCardHorizontal } from "../utils/transformers";
+import PageHeader from "../components/common/PageHeader";
 
 const BookCardSkeleton: FC = () => {
   return (
@@ -65,28 +66,26 @@ const SearchResults: FC = () => {
   }, [searchStr, action]);
 
   return (
-    <div>
-      <div className="min-h-screen pt-10">
+    <div className="page-layout narrow">
+      <PageHeader eyebrow="CATALOG SEARCH" title="도서 검색" description="제목, 작가, 출판사 기준으로 도서관 소장 자료를 찾아보세요." />
+      <div>
         <SearchBarv2 />
-        <div className="container max-w-2xl px-4 mx-auto">
-          <h2 className="mt-6 mb-2 text-2xl font-bold">
-            <span className="font-bold text-primary">'{searchStr}'</span>
-            <span>에 대한 검색 결과</span>
-          </h2>
+        <div className="mt-8">
+          <div className="section-heading"><div><h2><span className="text-primary">'{searchStr}'</span> 검색 결과</h2><p>{results.length}권의 소장 도서를 찾았습니다.</p></div></div>
 
-          {error && <p className="text-red-500">{error}</p>}
+          {error && <p className="page-feedback">{error}</p>}
 
           {loading ? (
             // 로딩 중일 때 여러 개의 Skeleton UI 렌더링(예시: 5개)
-            <div className="space-y-6 ">
+            <div className="space-y-4">
               {[...Array(5)].map((_, idx) => (
                 <BookCardSkeleton key={idx} />
               ))}
             </div>
           ) : results.length === 0 ? (
-            <p className="text-gray-600">검색 결과가 없습니다.</p>
+            <div className="page-empty">조건에 맞는 도서가 없습니다. 다른 검색어 또는 검색 기준을 시도해 보세요.</div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {results.map((book) => (
                 <BookCardHorizontalComponent key={book.id} {...book} />
               ))}

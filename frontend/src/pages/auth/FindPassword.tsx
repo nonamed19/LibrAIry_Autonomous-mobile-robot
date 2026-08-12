@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { searchPasswordService } from "../../services/userService";
 import { useToast } from "../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
+import PageHeader from "../../components/common/PageHeader";
 
 const FindPassword: React.FC = () => {
   const [userLoginId, setUserLoginId] = useState("");
@@ -43,9 +44,9 @@ const FindPassword: React.FC = () => {
     navigate("/login");
   };
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-snow">
-      <div className="w-full max-w-md p-6 bg-snow rounded">
-        <h2 className="mb-4 text-2xl font-bold text-center">비밀번호 찾기</h2>
+    <div className="page-layout narrow auth-layout">
+      <PageHeader eyebrow="ACCOUNT RECOVERY" title="비밀번호 찾기" description="본인 확인 후 임시 비밀번호를 이메일로 보내드립니다." />
+      <div className="auth-card">
         {resultMessage && (
           <div className="mb-4 text-center text-blue">{resultMessage}</div>
         )}
@@ -82,7 +83,7 @@ const FindPassword: React.FC = () => {
           <button
             type={resultMessage ? "button" : "submit"}
             onClick={resultMessage ? handleLoginRedirect : undefined}
-            className="w-full p-2 text-white bg-orange rounded hover:bg-orange-hover"
+            className="primary-action w-full justify-center py-3"
             disabled={loading}
           >
             {loading
@@ -92,7 +93,6 @@ const FindPassword: React.FC = () => {
                 : "비밀번호 찾기"}
           </button>
         </form>
-      </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { searchIdService } from "../../services/userService";
 import { useToast } from "../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
+import PageHeader from "../../components/common/PageHeader";
 
 const FindId: React.FC = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -42,9 +43,9 @@ const FindId: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-snow">
-      <div className="w-full max-w-md p-6 bg-snow rounded">
-        <h2 className="mb-4 text-2xl font-bold text-center">아이디 찾기</h2>
+    <div className="page-layout narrow auth-layout">
+      <PageHeader eyebrow="ACCOUNT RECOVERY" title="아이디 찾기" description="가입한 이메일로 아이디 안내를 보내드립니다." />
+      <div className="auth-card">
 
         {resultMessage && (
           <div className="mb-4 text-center text-blue">{resultMessage}</div>
@@ -68,7 +69,7 @@ const FindId: React.FC = () => {
           <button
             type={resultMessage ? "button" : "submit"}
             onClick={resultMessage ? handleLoginRedirect : undefined}
-            className="w-full p-2 text-white bg-orange rounded hover:bg-orange-hover"
+            className="primary-action w-full justify-center py-3"
             disabled={loading}
           >
             {loading
@@ -78,7 +79,6 @@ const FindId: React.FC = () => {
                 : "아이디 찾기"}
           </button>
         </form>
-      </div>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { changePasswordService } from "../../services/userService";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
+import PageHeader from "../../components/common/PageHeader";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -156,10 +157,11 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-snow">
-      <Card className="w-full max-w-md">
+    <div className="page-layout narrow auth-layout">
+      <PageHeader eyebrow="ACCOUNT SETTINGS" title="내 정보 관리" description="현재 비밀번호 확인 후 안전하게 새 비밀번호로 변경하세요." />
+      <Card className="auth-card w-full max-w-none">
         <CardHeader>
-          <h2 className="text-2xl font-bold">내 정보 관리</h2>
+          <h2 className="text-xl font-bold">비밀번호 변경</h2>
         </CardHeader>
         <CardContent>
           <AnimatePresence mode="wait">

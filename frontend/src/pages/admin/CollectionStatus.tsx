@@ -6,6 +6,7 @@ import {
   resetArriveZoneService,
 } from "../../services/arriveZoneService";
 import CollectionAreaCard from "../../components/admin/CollectionAreaCard";
+import PageHeader from "../../components/common/PageHeader";
 
 export interface CollectionArea {
   arriveZoneId: number;
@@ -66,8 +67,8 @@ const CollectionStatus: FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 bg-snow">
-      <div className="container px-4 mx-auto">
+    <div className="page-layout">
+      <PageHeader eyebrow="RETURN OPERATIONS" title="회수 현황" description="회수 구역별 도서 적재 현황을 확인하고 정리 완료 후 초기화하세요." />
         {loading ? (
           <div className="flex items-center justify-center">
             <motion.div
@@ -85,7 +86,7 @@ const CollectionStatus: FC = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="p-4 rounded-lg bg-snow"
+            className="page-feedback"
           >
             <div className="flex items-center text-red-700">
               <AlertCircle className="w-6 h-6 mr-2" />
@@ -96,7 +97,7 @@ const CollectionStatus: FC = () => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center text-gray-600"
+            className="page-empty"
           >
             회수 구역 정보가 없습니다.
           </motion.p>
@@ -128,7 +129,6 @@ const CollectionStatus: FC = () => {
             </motion.div>
           </AnimatePresence>
         )}
-      </div>
     </div>
   );
 };
