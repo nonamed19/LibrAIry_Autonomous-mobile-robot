@@ -37,13 +37,13 @@ const App: React.FC = () => {
       <AuthProvider>
         <NotificationProvider>
           <ToastProvider>
-            <div className="flex flex-col min-h-screen bg-snow">
-              {location.pathname !== "/admin/robot/screen" && <Header />}
+            <div className="app-shell">
+              <Header />
               <main
                 className={`flex-grow ${
                   location.pathname === "/admin/robot/screen"
-                    ? "w-[1024px] h-[600px] p-0 m-0 flex justify-center items-center bg-white"
-                    : "p-4 bg-snow -mt-10"
+                    ? "kiosk-route"
+                    : "site-main"
                 }`}
               >
                 <Routes>

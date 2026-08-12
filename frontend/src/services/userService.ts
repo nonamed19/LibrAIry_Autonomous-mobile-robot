@@ -22,6 +22,10 @@ import {
   UserInfoFrontData,
   UserFrontRequestDto,
   LeaveUserData,
+  UserRobotRequestDto,
+  UserRobotResponseDto,
+  UserRecordRequestDto,
+  UserLeaveRequestDto,
 } from "../backapi/data-contracts";
 
 /** 사용자 로그인 */
@@ -204,6 +208,57 @@ export const fetchUserQrCode = async () //userId: number
     return objectURL;
   } catch (error) {
     console.error("QR 코드 조회 오류:", error);
+    return null;
+  }
+};
+
+/** JWT 없이 사용자 QR 코드를 조회해야 하는 키오스크/운영 화면용 API입니다. */
+export const fetchUserQrCodeById = async (
+  userId: number
+): Promise<string | null> => {
+  try {
+    const response = await api.instance.post("/api/code/2", { userId }, {
+      responseType: "blob",
+    });
+    return URL.createObjectURL(response.data);
+  } catch (error) {
+    console.error("사용자 QR 코드 조회 실패:", error);
+    return null;
+  }
+};
+
+/** 로봇이 스캔한 사용자 정보를 세션 저장소에 전달합니다. */
+export const saveRobotUserService = async (
+  data: UserRobotRequestDto
+): Promise<UserRobotResponseDto | null> => {
+  try {
+    return (await api.userInfoRobot(data)).data;
+  } catch (error) {
+    console.error("로봇 사용자 정보 저장 실패:", error);
+    return null;
+  }
+};
+
+/** 관리자 키오스크에서 토큰 없이 특정 이용자의 대출 기록을 조회합니다. */
+export const fetchUserRecordsById = async (
+  data: UserRecordRequestDto
+): Promise<UserRecordResponseDto | null> => {
+  try {
+    return (await api.searchBook2(data)).data;
+  } catch (error) {
+    console.error("사용자 대출 기록 조회 실패:", error);
+    return null;
+  }
+};
+
+/** 관리자 키오스크에서 토큰 없이 회원 탈퇴를 처리해야 할 때 사용합니다. */
+export const userWithdrawalById = async (
+  data: UserLeaveRequestDto
+): Promise<LeaveUserData | null> => {
+  try {
+    return (await api.leaveUser2(data)).data;
+  } catch (error) {
+    console.error("회원 탈퇴 실패:", error);
     return null;
   }
 };

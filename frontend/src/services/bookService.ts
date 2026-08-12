@@ -11,6 +11,12 @@ import type {
   BookInfoFrontData,
   BookDetailResponseDto,
   BookMostListResponseDto,
+  BookReturnStartRequestDto,
+  BookReturnStartResponseDto,
+  BookReturnEndRequestDto,
+  BookReturnEndResponseDto,
+  BookRobotRequestDto,
+  BookRobotResponseDto,
 } from "../backapi/data-contracts";
 
 /** 도서 정보 등록/수정 */
@@ -103,6 +109,45 @@ export const bookMostService = async (
     return response.data;
   } catch (error) {
     console.error("대출 순위 조회 실패:", error);
+    return null;
+  }
+};
+
+/**
+ * 로봇이 인식한 도서 정보를 대출 화면에 전달합니다.
+ * 하드웨어 연동에서도 동일한 API를 사용하므로, 운영 화면에서 재시도할 수 있습니다.
+ */
+export const saveRobotBookService = async (
+  data: BookRobotRequestDto
+): Promise<BookRobotResponseDto | null> => {
+  try {
+    return (await api.bookInfoRobot(data)).data;
+  } catch (error) {
+    console.error("로봇 도서 정보 저장 실패:", error);
+    return null;
+  }
+};
+
+/** 반납/반환 프로세스를 시작하고 목적 회수 구역을 조회합니다. */
+export const startBookReturnService = async (
+  data: BookReturnStartRequestDto
+): Promise<BookReturnStartResponseDto | null> => {
+  try {
+    return (await api.returnBookStart(data)).data;
+  } catch (error) {
+    console.error("반납 시작 실패:", error);
+    return null;
+  }
+};
+
+/** 회수 구역에 도서가 도착한 뒤 반납/반환 프로세스를 완료합니다. */
+export const completeBookReturnService = async (
+  data: BookReturnEndRequestDto
+): Promise<BookReturnEndResponseDto | null> => {
+  try {
+    return (await api.returnBookEnd(data)).data;
+  } catch (error) {
+    console.error("반납 완료 처리 실패:", error);
     return null;
   }
 };
