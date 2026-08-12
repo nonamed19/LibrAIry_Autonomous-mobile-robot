@@ -1,8 +1,0 @@
-In file included from [01m[K/home/a103/ros2_ws/src/rf2o_laser_odometry/src/CLaserOdometry2DNode.cpp:18[m[K:
-[01m[K/home/a103/ros2_ws/src/rf2o_laser_odometry/include/rf2o_laser_odometry/CLaserOdometry2DNode.hpp:9:10:[m[K [01;31m[Kfatal error: [m[Ktf2_geometry_msgs/tf2_geometry_msgs.hpp: No such file or directory
-    9 | #include [01;31m[K<tf2_geometry_msgs/tf2_geometry_msgs.hpp>[m[K
-      |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
-compilation terminated.
-make[2]: *** [CMakeFiles/rf2o_laser_odometry_node.dir/build.make:63: CMakeFiles/rf2o_laser_odometry_node.dir/src/CLaserOdometry2DNode.cpp.o] Error 1
-make[1]: *** [CMakeFiles/Makefile2:134: CMakeFiles/rf2o_laser_odometry_node.dir/all] Error 2
-make: *** [Makefile:141: all] Error 2

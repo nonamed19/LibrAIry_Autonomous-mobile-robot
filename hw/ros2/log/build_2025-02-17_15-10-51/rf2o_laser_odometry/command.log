@@ -1,2 +1,0 @@
-Invoking command in '/home/a103/ros2_ws/build/rf2o_laser_odometry': CMAKE_PREFIX_PATH=/home/a103/ros2_ws/install/rf2o_laser_odometry:/opt/ros/foxy:/home/a103/catkin_ws/devel:/opt/ros/noetic /usr/bin/cmake --build /home/a103/ros2_ws/build/rf2o_laser_odometry -- -j6 -l6
-Invoked command in '/home/a103/ros2_ws/build/rf2o_laser_odometry' returned '2': CMAKE_PREFIX_PATH=/home/a103/ros2_ws/install/rf2o_laser_odometry:/opt/ros/foxy:/home/a103/catkin_ws/devel:/opt/ros/noetic /usr/bin/cmake --build /home/a103/ros2_ws/build/rf2o_laser_odometry -- -j6 -l6

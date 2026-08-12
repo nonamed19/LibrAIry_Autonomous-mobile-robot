@@ -1,0 +1,61 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### 환경 변수 ###
+.env
+
+### Frontend ###
+frontend/node_modules/
+frontend/dist/
+
+### Backend generated files ###
+backend/.metadata/
+backend/.gradle/
+backend/build/
+
+### ROS and Python generated files ###
+embedded/ros1/build/
+embedded/ros1/devel/
+embedded/ros1/build_isolated/
+embedded/ros1/devel_isolated/
+embedded/ros2/build/
+embedded/ros2/install/
+embedded/ros2/log/
+**/__pycache__/
+*.py[cod]
+*.log

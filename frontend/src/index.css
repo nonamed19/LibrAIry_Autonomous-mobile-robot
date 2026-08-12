@@ -1,0 +1,52 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import "tailwindcss";
+
+html,
+body {
+  font-family: "Pretendard", sans-serif;
+}
+
+@theme {
+  --font-sans: "Pretendard", sans-serif;
+  --color-orange: #fe623a;
+  --color-orange-hover: #e6542e;
+  --color-orange-disabled: #fbb8a4;
+
+  --color-blue: #6c85d7;
+  --color-blue-hover: #5a6bb7;
+  --color-blue-disabled: #b0c0f0;
+
+  --color-peach: #ffb07c;
+  --color-peach-hover: #e49c6d;
+  --color-peach-disabled: #ffe1c2;
+
+  --color-border: #ddd;
+  --color-input: #fff;
+  --color-ring: #d6d6d6;
+  --color-background: #fff8f5;
+  --color-foreground: #2d2d2d;
+
+  --color-primary: var(--color-orange);
+  --color-primary-hover: var(--color-orange-hover);
+  --color-primary-disabled: var(--color-orange-disabled);
+
+  --color-secondary: var(--color-blue);
+  --color-secondary-hover: var(--color-blue-hover);
+  --color-secondary-disabled: var(--color-blue-disabled);
+
+  --color-accent: var(--color-peach);
+  --color-accent-hover: var(--color-peach-hover);
+  --color-accent-disabled: var(--color-peach-disabled);
+
+  --color-muted: #e0e0e0;
+  --color-muted-foreground: #6b6b6b;
+
+  --radius: 0.5rem;
+  --color-snow: #fffafa;
+  --color-green: #0a8159;
+
+  --container-center: true;
+  --container-padding: 2rem;
+  --screen-2xl: 1400px;
+
+}
